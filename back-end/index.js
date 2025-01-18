@@ -1,9 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 var cors = require('cors');
 const app = express();
 const port = 3000;
 
-var indexRouter = require('./routes/index.js');
+var indexRouter = require('./routes/index');
+
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.uri)
+.then(console.log('Connected to Database'))
+.catch(err => console.log(err))
 
 // Define allowed origins for CORS
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
