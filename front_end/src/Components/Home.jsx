@@ -22,6 +22,6 @@ export default function Home(){
     }, [])
 
     return(
-        <div>Working</div>
+        <div className="text-blue-500 text-xl">Working</div>
     )
 }
