@@ -1,0 +1,21 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const scheduleSchema = new Schema({
+
+    availability : {
+        type : Array,
+        required : true,
+        index: true,
+    },
+    week: {
+        start: { type: Date, required: true },
+        end: { type: Date, required: true }
+      }
+
+
+}, {timestamps: true})
+
+const Schedule = new mongoose.model('Schedule', scheduleSchema);
+
+module.exports = Schedule;

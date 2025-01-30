@@ -3,13 +3,23 @@ import { useEffect, useState } from 'react';
 
 export default function SchedulePreferencesForm(){
 
-    useEffect(() => {
-    },[])
+    const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const timeSlot = ['9am', '10:05am', '11:10am', '12:15pm', '1:20pm', '2:25pm', '3:30pm', '4:35pm', '5:40pm', '6:45pm', '7:50pm']
 
     const server = import.meta.env.VITE_SERVER + 'bigman'
 
     const [currentWeek, setCurrentWeek] = useState(0)
     const [weeksList, setWeeksList] = useState()
+
+    const [availability, setAvailability] = useState(
+        week.reduce((acc, day) => {
+          acc[day] = timeSlot.reduce((slots, slot) => {
+            slots[slot] = false;
+            return slots;
+          }, {});
+          return acc;
+        }, {})
+      );
 
     let tempArray = [];
     for(let i= 0 ; i < 5; i++){
@@ -31,28 +41,16 @@ export default function SchedulePreferencesForm(){
         setWeeksList(tempArray)
     }
 
+    useEffect(() => {
+    },[])
 
-    const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    const timeSlot = ['10am', '12pm', '2pm', '4pm', '6pm', '8pm', 'All Day']
-
-    const userRoute = import.meta.env.VITE_API_URL + '/users'
-
-
-    const [availability, setAvailability] = useState(
-        week.reduce((acc, day) => {
-          acc[day] = timeSlot.reduce((slots, slot) => {
-            slots[slot] = false;
-            return slots;
-          }, {});
-          return acc;
-        }, {})
-      );
 
     function handleSubmit(e){
         e.preventDefault()
 
         const data = { 
-            message: 'hello'
+            availability: availability,
+            week: weeksList[currentWeek]
         }
         
         fetch( server , {
