@@ -140,7 +140,7 @@ export default function SchedulePreferencesForm(){
             <span className='pr-3'>
                 Week: 
             </span>
-            {weeksList && <select onChange={handleChange}>
+            {weeksList && <select onChange={handleChange} className='border-black border p-1 rounded-lg'>
                 <option value="0">
                     {weeksList && weeksList[0].start.toLocaleDateString('en-US', {
                         day: '2-digit',

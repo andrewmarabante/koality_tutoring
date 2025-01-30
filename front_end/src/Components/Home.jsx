@@ -12,6 +12,7 @@ export default function SchedulePreferencesForm(){
     const [weeksList, setWeeksList] = useState()
     const [reset, setReset] = useState()
     const [currentSchedules, setCurrentSchedules] = useState([])
+    const [released, setReleased] = useState(false)
 
     const [availability, setAvailability] = useState(
         week.reduce((acc, day) => {
@@ -69,6 +70,7 @@ export default function SchedulePreferencesForm(){
         let tempDate = new Date(schedule.week.start).toLocaleDateString('en-US')
         if(tempDate == tempCurrentWeek){
             setAvailability(schedule.availability[0])
+            setReleased(true)
             return schedule
         }
     })
@@ -83,6 +85,7 @@ export default function SchedulePreferencesForm(){
             return acc;
           }, {})
         )
+        setReleased(false)
     }
     
     
@@ -101,7 +104,7 @@ export default function SchedulePreferencesForm(){
             <span className='pr-3'>
                 Week: 
             </span>
-            {weeksList && <select onChange={handleChange}>
+            {weeksList && <select onChange={handleChange} className="border-black border p-1 rounded-lg">
                 <option value="0">
                     {weeksList && weeksList[0].start.toLocaleDateString('en-US', {
                         day: '2-digit',
@@ -153,7 +156,7 @@ export default function SchedulePreferencesForm(){
                     }
                 </option>
             </select>}
-            <div className="grid-cols-2 md:grid-cols-3 grid gap-5 border border-gray p-2 rounded-xl shadow-lg mt-3">
+            {released ? <div className="grid-cols-2 md:grid-cols-3 grid gap-5 border border-gray p-2 rounded-xl shadow-lg mt-3">
                 {week.map((day) => {
                     return(
                         <div key={day}>
@@ -170,7 +173,11 @@ export default function SchedulePreferencesForm(){
                         </div>
                     )
                 })}
-            </div>
+            </div> : 
+            <div className="text-lg text-center pt-10">
+                <div>Schedule Not Released Yet!</div>
+                <div className="text-xs font-extralight">Sorry I don't want to waste my time styling this website lol. It gets the job done.</div>
+            </div>}
         </div>
     )
 }
