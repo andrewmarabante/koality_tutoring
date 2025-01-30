@@ -5,6 +5,7 @@ const app = express();
 const port = 3000;
 
 var indexRouter = require('./routes/index');
+var bigmanRouter = require('./routes/bigman');
 
 const mongoose = require('mongoose');
 
@@ -27,6 +28,7 @@ app.use(express.json());
 
 // Routes
 app.use('/', indexRouter);
+app.use('/bigman', bigmanRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {
