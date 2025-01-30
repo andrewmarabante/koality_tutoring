@@ -10,6 +10,8 @@ export default function SchedulePreferencesForm(){
 
     const [currentWeek, setCurrentWeek] = useState(0)
     const [weeksList, setWeeksList] = useState()
+    const [reset, setReset] = useState()
+    const [currentSchedules, setCurrentSchedules] = useState([])
 
     const [availability, setAvailability] = useState(
         week.reduce((acc, day) => {
@@ -42,8 +44,49 @@ export default function SchedulePreferencesForm(){
     }
 
     useEffect(() => {
-    },[])
 
+        fetch(server, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+            },
+            credentials: 'include'
+        })
+        .then(result => result.json())
+        .then(data => {
+            setCurrentSchedules(data)
+        })
+        .catch(err => console.log(err))
+    },[reset])
+
+   useEffect(() => {
+
+    let tempCurrentWeek = (weeksList[currentWeek].start.toLocaleDateString('en-US'))
+
+    let tempSchedule = currentSchedules.filter(schedule => {
+        let tempDate = new Date(schedule.week.start).toLocaleDateString('en-US')
+        if(tempDate == tempCurrentWeek){
+            setAvailability(schedule.availability[0])
+            return schedule
+        }
+    })
+
+    if(tempSchedule.length === 0){
+        setAvailability(        
+            week.reduce((acc, day) => {
+            acc[day] = timeSlot.reduce((slots, slot) => {
+              slots[slot] = false;
+              return slots;
+            }, {});
+            return acc;
+          }, {})
+        )
+    }
+    
+    
+   }, [currentSchedules, currentWeek])
 
     function handleSubmit(e){
         e.preventDefault()
@@ -65,10 +108,11 @@ export default function SchedulePreferencesForm(){
         })
         .then(result => result.json())
         .then(data => {
-            console.log(data)
+            setReset(v4())
         })
         .catch(err => console.log(err))
     }
+
 
     const handleCheckboxChange = (day, slot) => {
 
@@ -93,50 +137,50 @@ export default function SchedulePreferencesForm(){
             </span>
             {weeksList && <select onChange={handleChange}>
                 <option value="0">
-                    {weeksList && weeksList[0].start.toLocaleDateString('en-GB', {
+                    {weeksList && weeksList[0].start.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
-                    }) + ' - ' + weeksList[0].end.toLocaleDateString('en-GB', {
+                    }) + ' - ' + weeksList[0].end.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
                     })
                     }
                 </option>
                 <option value="1">
-                    {weeksList && weeksList[1].start.toLocaleDateString('en-GB', {
+                    {weeksList && weeksList[1].start.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
-                    }) + ' - ' + weeksList[1].end.toLocaleDateString('en-GB', {
+                    }) + ' - ' + weeksList[1].end.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
                     })
                     }
                 </option>
                 <option value="2">
-                    {weeksList && weeksList[2].start.toLocaleDateString('en-GB', {
+                    {weeksList && weeksList[2].start.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
-                    }) + ' - ' + weeksList[2].end.toLocaleDateString('en-GB', {
+                    }) + ' - ' + weeksList[2].end.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
                     })
                     }
                 </option>
                 <option value="3">
-                    {weeksList && weeksList[3].start.toLocaleDateString('en-GB', {
+                    {weeksList && weeksList[3].start.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
-                    }) + ' - ' + weeksList[3].end.toLocaleDateString('en-GB', {
+                    }) + ' - ' + weeksList[3].end.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
                     })
                     }
                 </option>
                 <option value="4">
-                    {weeksList && weeksList[4].start.toLocaleDateString('en-GB', {
+                    {weeksList && weeksList[4].start.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
-                    }) + ' - ' + weeksList[4].end.toLocaleDateString('en-GB', {
+                    }) + ' - ' + weeksList[4].end.toLocaleDateString('en-US', {
                         day: '2-digit',
                         month: '2-digit',
                     })
@@ -167,10 +211,10 @@ export default function SchedulePreferencesForm(){
                     )
                 })}
                 <div className="flex flex-col justify-end p-10">
-                    <button onClick={()=>{console.log(currentDate)}}>Test</button>
                     <button className="p-2 rounded-2xl border border-gray hover:bg-blue-50" >Submit</button>
                 </div>
             </form>
+            <button className='border-black border p-5' onClick={() => {setAvailability(currentSchedules[0].availability[0])}}> Button</button>
         </div>
     )
 }
