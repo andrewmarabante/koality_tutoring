@@ -56,6 +56,7 @@ export default function SchedulePreferencesForm(){
         })
         .then(result => result.json())
         .then(data => {
+            console.log('reset', data)
             setCurrentSchedules(data)
         })
         .catch(err => console.log(err))
@@ -68,6 +69,7 @@ export default function SchedulePreferencesForm(){
     let tempSchedule = currentSchedules.filter(schedule => {
         let tempDate = new Date(schedule.week.start).toLocaleDateString('en-US')
         if(tempDate == tempCurrentWeek){
+            console.log(schedule)
             setAvailability(schedule.availability[0])
             return schedule
         }
@@ -108,6 +110,9 @@ export default function SchedulePreferencesForm(){
         })
         .then(result => result.json())
         .then(data => {
+            if(data === 'saved'){
+                alert('saved')
+            }
             setReset(v4())
         })
         .catch(err => console.log(err))
@@ -214,7 +219,7 @@ export default function SchedulePreferencesForm(){
                     <button className="p-2 rounded-2xl border border-gray hover:bg-blue-50" >Submit</button>
                 </div>
             </form>
-            <button className='border-black border p-5' onClick={() => {setAvailability(currentSchedules[0].availability[0])}}> Button</button>
+
         </div>
     )
 }

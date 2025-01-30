@@ -10,7 +10,13 @@ function getSchedule(req,res){
         {
           $group: {
             _id: { 
-                start: { $dateToString: { format: "%Y-%m-%d", date: "$week.start" } } 
+                start: { $dateToString: { format: "%Y-%m-%d",           date: {
+                    $dateFromParts: {
+                      year: { $year: { date: "$week.start", timezone: "America/Los_Angeles" } }, 
+                      month: { $month: { date: "$week.start", timezone: "America/Los_Angeles" } }, 
+                      day: { $dayOfMonth: { date: "$week.start", timezone: "America/Los_Angeles" } }
+                    }
+                  } } } 
               }, // Group by week.start
             latestSchedule: { $first: "$$ROOT" } // Pick the first (latest) document in each group
           }
