@@ -1,25 +1,6 @@
 const security = require('../security')
 const User = require('../models/user');
 
-// async function createAcc(req, res){
-//     const hash = await security.hashPassword(req.body.password)
-
-//     const userDetails = {
-//         username: req.body.username,
-//         password: hash
-//     }
-
-//     const newUser = new User(userDetails)
-
-//     newUser.save()
-//     .then(() => {
-//         res.json('saved')
-//     })
-//     .catch(err => res.json(err))
-
-
-// }
-
  function login(req, res){
 
     User.find({username: req.body.username})
