@@ -15,15 +15,17 @@ mongoose.connect(process.env.uri)
 .catch(err => console.log(err))
 
 // Define allowed origins for CORS
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const allowedOrigins = ['https://my-schedule-pied.vercel.app'];
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true, // Allow credentials (e.g., cookies, authorization headers)
 };
 
+
 // Apply CORS middleware before any other routes or middleware
 app.use(cookieParser())
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Middleware to parse JSON requests
 app.use(express.json());
