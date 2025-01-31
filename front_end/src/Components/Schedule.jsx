@@ -1,8 +1,11 @@
 import {v4} from 'uuid';
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 
 export default function SchedulePreferencesForm(){
 
+    const navigate = useNavigate();
     const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const timeSlot = ['9am', '10:05am', '11:10am', '12:15pm', '1:20pm', '2:25pm', '3:30pm', '4:35pm', '5:40pm', '6:45pm', '7:50pm']
 
@@ -112,6 +115,8 @@ export default function SchedulePreferencesForm(){
         .then(data => {
             if(data === 'saved'){
                 alert('saved')
+            }else{
+                navigate('/login')
             }
             setReset(v4())
         })

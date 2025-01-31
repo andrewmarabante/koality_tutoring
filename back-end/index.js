@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cookieParser = require("cookie-parser");
 const express = require('express');
 var cors = require('cors');
 const app = express();
@@ -21,6 +22,7 @@ const corsOptions = {
 };
 
 // Apply CORS middleware before any other routes or middleware
+app.use(cookieParser())
 app.use(cors(corsOptions));
 
 // Middleware to parse JSON requests
