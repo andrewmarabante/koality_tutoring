@@ -187,15 +187,15 @@ export default function ViewSchedule(){
                 <div className="flex justify-center pt-10">
                     <CircularProgress size={100}/>
                 </div>}
-                <div className="pt-5 font-extralight"> I am hiring tutors for these subjects: </div>
-                <ul className="text-xs font-light grid grid-cols-3 px-5">
+                <div className="pt-5 font-extralight text-center"> <span className="border-b border-black">I am hiring tutors for these subjects:</span> </div>
+                <ul className="text-xs font-light grid grid-cols-3 px-5 text-center py-2">
                     <li>-Math</li>
                     <li>-English</li>
                     <li>-Chemistry</li>
                     <li>-Biology</li>
                     <li>-Econ</li>
                 </ul>
-                <div className="pt-5 text-xs font-extralight">
+                <div className="pt-5 text-xs font-extralight text-center">
                     I will also potentially pay someone to stand/sit whatever you
                     want, on a campus with a sign on a busy day LOL. If you're interested in
                     that lmk as well, you can make money while you study!
