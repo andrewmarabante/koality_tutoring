@@ -103,7 +103,10 @@ export default function ViewSchedule(){
             <div className="p-5">
                 <div className="font-serif text-center text-xl border-b mx-20">Andrew's Schedule!</div>
                 <div className="font-extralight text-xs text-center m-2">-Any time slot on here means I am available at this time for one hour!</div>
-                <div className="font-extralight text-xs text-center m-2">If you want to schedule an appointment, shoot a text to <em>951 348 1243</em></div>
+                <div className="font-extralight text-xs text-center m-2">If you want to schedule an appointment, shoot a text to <em>951 348 1243 </em>! 
+                I tutor all computational maths, not your upper divs bro, and a lot of other
+                subjects too! Let me know in your text!
+                </div>
                 <span className='pr-3'>
                     Week:
                 </span>
@@ -159,6 +162,7 @@ export default function ViewSchedule(){
                         }
                     </option>
                 </select>}
+                <div>Current Rate: <span className="font-extralight">$35 per hour</span></div>
                 {released && !loading &&
                 <div className="grid-cols-2 md:grid-cols-3 grid gap-5 border border-gray p-2 rounded-xl shadow-lg mt-3">
                     {week.map((day) => {
