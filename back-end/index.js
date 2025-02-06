@@ -15,7 +15,7 @@ mongoose.connect(process.env.uri)
 .catch(err => console.log(err))
 
 // Define allowed origins for CORS
-const allowedOrigins = ['https://www.koalitytutoring.com'];
+const allowedOrigins = ['https://www.koalitytutoring.com', 'http://localhost:5173'];
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true, // Allow credentials (e.g., cookies, authorization headers)
