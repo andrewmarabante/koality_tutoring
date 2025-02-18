@@ -1,2 +1,22 @@
+@font-face {
+    font-family: roboto;
+    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-Light.ttf');
+}
+
+@font-face {
+    font-family: roboto-title;
+    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: roboto-title-light;
+    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-SemiBoldItalic.ttf');
+}
+
 @import "tailwindcss";
 
+@theme{
+    --font-roboto: roboto, 'sans-serif';
+    --font-roboto-title: roboto-title, 'sans-serif';
+    --font-roboto-title-italic: roboto-title-light, 'sans-serif';
+}

@@ -8,6 +8,7 @@ import Home from './Components/Home.jsx'
 import Error from './Components/Error.jsx'
 import Bigman from './Components/Bigman.jsx'
 import Login from './Components/Login.jsx'
+import Navbar from'./Components/Navbar.jsx'
 
 const router = createBrowserRouter([
   {
