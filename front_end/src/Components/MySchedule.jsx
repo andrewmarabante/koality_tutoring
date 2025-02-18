@@ -104,7 +104,7 @@ export default function ViewSchedule(){
             <div className="p-5 grow overflow-hidden z-40 font-roboto">
                 <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 overflow-scroll h-full">
                             <div className="flex justify-center gap-2">
-                                <div className='pr-3 font-roboto-title-italic text-2xl'>
+                                <div className='pr-3 font-roboto-title text-2xl'>
                                     Week:
                                 </div>
                                 {weeksList && <select onChange={handleChange} className="border border-gray-300 p-1 rounded-lg bg-white">

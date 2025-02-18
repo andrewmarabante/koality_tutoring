@@ -1,9 +1,9 @@
 export default function Overview() {
     return (
       <div className="p-7 grow overflow-hidden z-20">
-        <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-full overflow-auto">
-          <div className="text-center text-4xl font-roboto-title text-gray-800 border-b border-black pb-2">
-            Welcome to <br /> <em className="font-roboto-title-italic ">Koality</em> Tutoring
+        <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-fit overflow-auto">
+          <div className="text-center text-4xl font-roboto-title text-gray-700 border-b border-black pb-2">
+            Welcome to <br /> Koality  Tutoring
           </div>
           <div className="text-2xl px-5 pt-5 font-roboto">
             <em>Koality Tutoring</em> is a private tutoring
