@@ -9,7 +9,7 @@ export default function WhyUs(){
                         At Koality Tutoring, we believe that personalized education
                         doesn't have to break the bank. Unlike larger platforms like Wyzant
                         or Varsity Tutors, we offer affordable rates without compromising on quality.
-                        Our mission is to make exceptional tutoring accessible to ALL students, ensuring that
+                        Our mission is to make exceptional tutoring accessible to <span className="font-roboto-title-italic">all</span> students, ensuring that
                         everyone has the opportunity to excel academically.
                     </div>
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Personally-Vetted Tutors</div>

@@ -7,10 +7,10 @@ export default function PlansPricing(){
                     <div className="text-sm font-roboto px-2">
                         There are currently no plans offered but that is soon to change! 
                         Group tutoring will soon be available and accomplish sustainability by offering
-                        a VERY affordable plan! Sometimes, having a few study buddies is better!
+                        a <span className="font-roboto-title-italic">very</span> affordable plan! Sometimes, having a few study buddies is better!
                     </div>
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Pricing</div>
-                    <div className="text-sm font-roboto px-2">
+                    <div className="text-sm font-roboto px-2 pb-5">
                         In the spirit of growing our student base, we are
                         offering premium tutoring for as low as $30 and limiting the highest rate at $50 per hour!
                         Prices vary from subject to subject and tutor to tutor. Rates will be sent with confirmation

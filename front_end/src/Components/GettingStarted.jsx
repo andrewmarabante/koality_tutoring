@@ -11,7 +11,7 @@ export default function GettingStarted(){
                     </div>
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Step 2: Homework</div>
                     <div className="text-sm font-roboto px-2">
-                        Somewhat optional, but try and take some pictures of your latest class material A.K.A 'Homework'. This allows 
+                        Somewhat optional, but try and take some pictures of your latest class material <span className="font-roboto-title-italic">a.k.a.</span> 'Homework'. This allows 
                         us to better understand where you are as a student and what we need to know before diving in to
                         a lesson! Doing this will personalize your lesson and overall enhance your tutoring experience.
                     </div>
@@ -21,7 +21,7 @@ export default function GettingStarted(){
                     </div>
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Step 4: Text</div>
                     <div className="text-sm font-roboto px-2">
-                        Send a text to <em className="mr-1">(951) 348-1243</em> that includes your Name, Subject,
+                        Send a text to <span className="mr-1 font-roboto-title-italic">(951) 348-1243</span> that includes your Name, Subject,
                         Homework, and requested Schedule time. You will recieve a confirmation text with a tutor and rate.
                         (see plans and pricing)
                     </div>

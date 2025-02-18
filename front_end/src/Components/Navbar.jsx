@@ -128,7 +128,7 @@ export default function Navbar({section, changeSection}) {
             <div className='relative flex-grow'>
                 <img src={koalaPeeper} alt="koala" className='h-8 absolute -bottom-2 left-5'/>
                 <img src={leftHangingBranch} alt="branch" className='h-15 absolute top-0 right-0'/>
-                <div className='text-xs sm:text-base md:text-base text-black bg-white pr-2 pl-2 rounded-xl opacity-60 font-roboto-title-italic absolute bottom-0 right-0 text-nowrap'><em>Koality Tutors</em></div>
+                <div className='text-xs sm:text-base md:text-base text-black bg-white pr-2 pl-2 rounded-xl opacity-60 font-roboto-title absolute bottom-0 right-0 text-nowrap'>Koality Tutors</div>
             </div>
       </div>
       <Drawer open={open} onClose={toggleDrawer(false) }>

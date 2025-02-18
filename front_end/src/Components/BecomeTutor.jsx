@@ -26,7 +26,7 @@ export default function BecomeTutor(){
                         Anything STEM related has more opportunity as these are more objective classes, students
                         tend to need more help. However, we need tutors for literally everything so get in touch!
                     </div>
-                    <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Subjects we NEED:</div>
+                    <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Subjects we <span className="font-roboto-title-italic">Need</span>:</div>
                     <div className="text-sm font-roboto px-2">
                         Koality Tutoring is a new company, as such we have a <em>bunch</em> of holes we need filled: 
                         <div className="grid grid-cols-3 my-2">
@@ -45,7 +45,7 @@ export default function BecomeTutor(){
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">How to apply:</div>
                     <div className="text-sm font-roboto px-2">
                         Head over to the Schedules tab and select a time that works with your schedule. Then,
-                        just send a text message to <em>(951)348-1243</em> with your Name, Subject, and Schedule time. 
+                        just send a text message to <span className="font-roboto-title-italic">(951)348-1243</span> with your Name, Subject, and Schedule time. 
                         Be sure to specify that you want to be a tutor, not a student! We will be in touch to have an
                         interview at that time!
                     </div>

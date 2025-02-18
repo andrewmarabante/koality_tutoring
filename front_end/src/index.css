@@ -5,12 +5,12 @@
 
 @font-face {
     font-family: roboto-title;
-    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-SemiBold.ttf');
+    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-Medium.ttf');
 }
 
 @font-face {
     font-family: roboto-title-light;
-    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-SemiBoldItalic.ttf');
+    src: url('./assets/fonts/Roboto/static/Roboto_Condensed-LightItalic.ttf');
 }
 
 @import "tailwindcss";

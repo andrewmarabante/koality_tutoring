@@ -6,9 +6,9 @@ export default function Overview() {
             Welcome to <br /> Koality  Tutoring
           </div>
           <div className="text-2xl px-5 pt-5 font-roboto">
-            <em>Koality Tutoring</em> is a private tutoring
+            Koality Tutoring is a private tutoring
             company that provides students with high-end, capable tutors at affordable prices.
-            You can trust us to provide you with the best, <em>koality</em> tutoring that every student deserves.
+            You can trust us to provide you with the best, <span className="pr-1 font-roboto-title-italic">koality</span> tutoring that every student deserves.
           </div>
         </div>
       </div>
