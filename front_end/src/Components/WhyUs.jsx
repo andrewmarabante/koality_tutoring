@@ -2,7 +2,7 @@ export default function WhyUs(){
     return(
         <div className="flex-col grow justify-center items-center z-40 p-10 overflow-hidden relative">
             <div className="h-full relative">
-                <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-full overflow-scroll scrollbar-thin scrollbar-thumb-blue-900 scrollbar-track-gray-100">
+                <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-full overflow-auto">
                     <div className="text-4xl font-roboto border-b text-center mx-3 pb-3">Why Us??</div>
                     <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Affordable Rates:</div>
                     <div className="text-sm font-roboto px-2">
