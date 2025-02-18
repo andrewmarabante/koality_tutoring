@@ -161,7 +161,7 @@ export default function ViewSchedule(){
                                 </select>}
                             </div>
 
-                    {released && <div className="font-roboto text-center text-sm pt-2">-Every time slot on here is for one hour!</div>}
+                    {released && <div className="font-roboto text-center text-sm pt-2">-Every time slot on here is available for one hour!</div>}
 
                     {released && !loading &&
                     <div className="grid-cols-2 md:grid-cols-3 grid gap-5 p-2 rounded-xl">
