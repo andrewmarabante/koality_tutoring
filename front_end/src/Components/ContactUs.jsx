@@ -1,7 +1,7 @@
 export default function ContactUs(){
     return(
         <div className="p-7 grow overflow-hidden z-20">
-        <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-full overflow-auto">
+        <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl p-5 h-fit overflow-auto">
           <div className="text-center text-4xl font-roboto-title text-gray-800 border-b border-black pb-2">
             Contact Us
           </div>
