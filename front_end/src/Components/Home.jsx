@@ -1,6 +1,5 @@
 import { useState } from "react"
 import Navbar from "./Navbar"
-import backgroundImage from '/assets/blueSkyBackground.svg'
 import Overview from '../Components/Overview.jsx'
 import WhyUs from '../Components/WhyUs.jsx'
 import GettingStarted from '../Components/GettingStarted.jsx'
@@ -32,7 +31,7 @@ export default function Home(){
         <div className="flex flex-col h-screen relative">
             <Navbar changeSection={changeSection} section={section}/>
             <div className='h-5 w-full bg-gradient-to-b from-black to-transparent z-20 opacity-15'></div>
-            <div className="absolute top-0 left-0 h-screen w-screen z-0" style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover'}}></div>
+            <div className="absolute top-0 left-0 h-screen w-screen bg-[url('/assets/blueSkyVerticalBackground.svg')] lg:bg-[url('/assets/blueSkyHorizontalBackground.svg')] bg-cover z-0"></div>
             {section === 'Overview' && <Overview />}
             {section === 'Why Us' && <WhyUs />}
             {section === 'Getting Started' && <GettingStarted />}
