@@ -110,7 +110,7 @@ export default function Navbar({section, changeSection}) {
 
 
   return (
-    <div className="p-1 shadow-xl bg-[url('/assets/bambooBackground.jpeg')] bg-[length:350px] sm:bg-[length:500px] md:bg-[length:700px] lg:bg-[length:900px] xl:bg-[length:1000px] z-40">
+    <div className="p-1 shadow-xl bg-[url('/assets/bambooBackground.jpeg')] bg-cover z-40">
         <div className='h-full p-5 w-full absolute top-0 left-0 opacity-70 -z-10'></div>
       <div className='relative flex'>
           <MenuIcon onClick={toggleDrawer(true)} className='rounded-lg bg-white opacity-70 shadow-2xl' sx={{
