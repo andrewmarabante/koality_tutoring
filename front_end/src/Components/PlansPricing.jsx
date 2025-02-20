@@ -13,9 +13,7 @@ export default function PlansPricing(){
                         <div className="text-xl font-roboto pt-5 px-2 pb-1 w-fit">Pricing</div>
                         <div className="text-sm font-roboto px-2 pb-5">
                             In the spirit of growing our student base, we are
-                            offering premium tutoring for as low as $30 and limiting the highest rate at $50 per hour!
-                            Prices vary from subject to subject and tutor to tutor. Rates will be sent with confirmation
-                            message.
+                            offering premium tutoring for the low flat rate of $35 per hour. Get it while it's hot!
                         </div>
                     </div>
                 </div>
