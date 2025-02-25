@@ -1,13 +1,13 @@
 import { useState } from "react"
-import Navbar from "./Navbar"
-import Overview from '../Components/Overview.jsx'
-import WhyUs from '../Components/WhyUs.jsx'
-import GettingStarted from '../Components/GettingStarted.jsx'
-import ViewSchedule from '../Components/MySchedule.jsx'
-import ContactUs from '../Components/ContactUs.jsx'
-import PlansPricing from '../Components/PlansPricing.jsx'
-import BecomeTutor from '../Components/BecomeTutor.jsx'
-import JoinCommunity from '../Components/JoinCommunity.jsx'
+import Navbar from "./Navbar.jsx"
+import Overview from './Overview.jsx'
+import WhyUs from './WhyUs.jsx'
+import GettingStarted from './GettingStarted.jsx'
+import ViewSchedule from './MySchedule.jsx'
+import ContactUs from './ContactUs.jsx'
+import PlansPricing from './PlansPricing.jsx'
+import BecomeTutor from './BecomeTutor.jsx'
+import JoinCommunity from './JoinCommunity.jsx'
 
 
 export default function Home(){

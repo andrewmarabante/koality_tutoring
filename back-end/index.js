@@ -7,6 +7,7 @@ const port = 3000;
 
 var indexRouter = require('./routes/index');
 var bigmanRouter = require('./routes/bigman');
+var signupRouter = require('./routes/signup')
 
 const mongoose = require('mongoose');
 
@@ -15,7 +16,7 @@ mongoose.connect(process.env.uri)
 .catch(err => console.log(err))
 
 // Define allowed origins for CORS
-const allowedOrigins = ['https://www.koalitytutoring.com'];
+const allowedOrigins = ['https://www.koalitytutoring.com', 'http://localhost:5173'];
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true, // Allow credentials (e.g., cookies, authorization headers)
@@ -33,6 +34,7 @@ app.use(express.json());
 // Routes
 app.use('/', indexRouter);
 app.use('/bigman', bigmanRouter);
+app.use('/signup', signupRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {

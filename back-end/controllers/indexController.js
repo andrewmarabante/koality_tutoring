@@ -1,5 +1,6 @@
 const security = require('../security')
 const User = require('../models/user');
+const Tutor = require('../models/tutor');
 
  function login(req, res){
 
@@ -27,6 +28,40 @@ const User = require('../models/user');
     .catch(err => res.json(err))
 }
 
+function tutorSignup(req,res){
+    console.log(req.body)
+    Tutor.find({email : req.body.username})
+    .then((result) => {
+        if(result.length === 0){
+            const details = {
+                email: req.body.username,
+                password: req.body.password,
+                verified: false
+            }
+            const newTutor = new Tutor(details)
+
+            newTutor.save()
+            .then(() => {
+                res.json('saved')
+            })
+            .catch((err) => {
+                res.status(500).json(err)
+            })
+            
+        }
+        else{
+            res.json('email taken')
+        }
+    })
+}
+
+function studentSignup(req,res){
+    console.log(req.body)
+    res.json('student')
+}
+
 module.exports = {
     login,
+    tutorSignup,
+    studentSignup
 }
