@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function TutorHome(){
 
-        const [section, setSection] = useState('Overview')
+        const [section, setSection] = useState('Profile')
     
     
         function changeSection(newSection){
@@ -12,10 +12,6 @@ export default function TutorHome(){
                 return
             }
     
-            // if(newSection === 'Login'){
-            //     return window.location.href = '/login'
-            // }
-            
             setSection(newSection)
         }
     

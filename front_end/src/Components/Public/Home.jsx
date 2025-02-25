@@ -7,7 +7,8 @@ import ViewSchedule from './MySchedule.jsx'
 import ContactUs from './ContactUs.jsx'
 import PlansPricing from './PlansPricing.jsx'
 import BecomeTutor from './BecomeTutor.jsx'
-import JoinCommunity from './JoinCommunity.jsx'
+import Login from "./Login.jsx"
+import Signup from "./Signup.jsx"
 
 
 export default function Home(){
@@ -39,8 +40,8 @@ export default function Home(){
             {section === 'Contact Us' && <ContactUs />}
             {section === 'Plans and Pricing' && <PlansPricing />}
             {section === 'Become a Tutor' && <BecomeTutor />}
-            {section === 'Join The Community' && <JoinCommunity />}
-            {section === 'Login' && <JoinCommunity />}
+            {section === 'Join The Community' && <Signup changeSection={changeSection} />}
+            {section === 'Login' && <Login />}
 
         </div>
     )

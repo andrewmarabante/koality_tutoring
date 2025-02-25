@@ -8,6 +8,7 @@ const port = 3000;
 var indexRouter = require('./routes/index');
 var bigmanRouter = require('./routes/bigman');
 var signupRouter = require('./routes/signup')
+var loginRouter = require('./routes/login')
 
 const mongoose = require('mongoose');
 
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/bigman', bigmanRouter);
 app.use('/signup', signupRouter);
+app.use('/login', loginRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {
