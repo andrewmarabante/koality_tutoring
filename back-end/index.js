@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var bigmanRouter = require('./routes/bigman');
 var signupRouter = require('./routes/signup')
 var loginRouter = require('./routes/login')
+var tutorRouter = require('./routes/tutor')
 
 const mongoose = require('mongoose');
 
@@ -26,6 +27,8 @@ const corsOptions = {
 
 // Apply CORS middleware before any other routes or middleware
 app.use(cookieParser())
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ extended: true , limit: '50mb'}))
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
@@ -37,6 +40,7 @@ app.use('/', indexRouter);
 app.use('/bigman', bigmanRouter);
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
+app.use('/tutor', tutorRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {

@@ -11,9 +11,45 @@ const tutorSchema = new Schema({
         type : String,
         required: true
       },
+    first_name: {
+        type : String,
+        required: true
+      },
+    last_name: {
+        type : String,
+        required: true
+      },
+    rate: {
+        type : Number,
+        required: true
+      },
     verified: {
         type : Boolean,
         required: true
+      },
+    interviewed: {
+        type : Boolean,
+        required: true
+      },
+      bio: {
+        type : String,
+        required: true
+      },
+      photo: {
+        type : String,
+        required: true
+      },
+      subject1: {
+        type : String,
+        required: false
+      },
+      subject2: {
+        type : String,
+        required: false
+      },
+      subject3: {
+        type : String,
+        required: false
       },
 
 

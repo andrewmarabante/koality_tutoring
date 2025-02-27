@@ -6,6 +6,6 @@ const auth = require('../auth.js')
 /* GET home page. */
 router.get('/', bigmanControllers.getSchedule);
 
-router.post('/', auth.verifyToken, bigmanControllers.newSchedule);
+router.post('/', auth.verifyBigmanToken, bigmanControllers.newSchedule);
 
 module.exports = router;

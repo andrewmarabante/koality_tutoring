@@ -7,8 +7,6 @@ import './index.css'
 import Home from './Components/Public/Home.jsx'
 import Error from './Components/Error.jsx'
 import Bigman from './Components/Bigman/Bigman.jsx'
-import Login from './Components/Public/Login.jsx'
-import Signup from './Components/Public/Signup.jsx'
 import BigmanLogin from './Components/Public/BigmanLogin.jsx';
 
 

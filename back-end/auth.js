@@ -1,5 +1,7 @@
 const argon2 = require("argon2");
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
 
 
 async function hashPassword(password) {
@@ -28,10 +30,9 @@ async function verifyPassword(enteredPassword, storedHash) {
     return accessToken
   }
 
-  function verifyToken(req,res,next){
+  function verifyTutorToken(req,res,next){
 
-
-    const accessToken = req.cookies.bigmanjwt;
+    const accessToken = req.cookies.tutorjwt;
 
     if (accessToken == null){return res.status(401).json('401')}
     jwt.verify(accessToken, process.env.SECRET, (err, user) => {
@@ -44,6 +45,23 @@ async function verifyPassword(enteredPassword, storedHash) {
         req.userInfo = user
         next()
     })
+}
+
+function verifyBigmanToken(req,res,next){
+
+  const accessToken = req.cookies.bigmanjwt;
+
+  if (accessToken == null){return res.status(401).json('401')}
+  jwt.verify(accessToken, process.env.SECRET, (err, user) => {
+      if(err){
+        if(res.websocket){
+          return next('403')
+        }
+        return res.status(403).json('403')
+      }
+      req.userInfo = user
+      next()
+  })
 }
 
 function generateVerificationToken(email){
@@ -84,7 +102,9 @@ function sendVerificationEmail(userEmail, token) {
     hashPassword,
     verifyPassword,
     createToken,
-    verifyToken,
+    verifyTutorToken,
+    verifyBigmanToken,
     generateVerificationToken,
-    sendVerificationEmail
+    sendVerificationEmail,
+    jwt,
   }

@@ -2,6 +2,7 @@ const auth = require('../auth')
 const User = require('../models/user');
 const Tutor = require('../models/tutor');
 
+
  function login(req, res){
 
     User.find({username: req.body.username})
@@ -40,7 +41,13 @@ function tutorSignup(req,res){
             const details = {
                 email: req.body.username,
                 password: hashedPassword,
-                verified: false
+                first_name: 'First Name',
+                last_name: 'Last Name',
+                rate: 30,
+                interviewed: false,
+                verified: false,
+                photo: 'https://res.cloudinary.com/djg9ttgrn/image/upload/v1712280077/s8vwpudk7bhwkp0axgng.jpg',
+                bio: 'default'
             }
             const newTutor = new Tutor(details)
 
@@ -64,10 +71,18 @@ function studentSignup(req,res){
     res.json('student')
 }
 
-async function initiateEmailVerification(req,res){    
-    const emailToken = auth.generateVerificationToken(req.body.email)
-    await auth.sendVerificationEmail(req.body.email, emailToken)
-    res.status(200).json('email sent')
+async function initiateEmailVerification(req,res){
+
+    const userId = req.userInfo.userId;
+
+    Tutor.find({_id: userId})
+    .then(async result => {
+        const emailToken = auth.generateVerificationToken(result[0].email)
+        const email = result[0].email
+        await auth.sendVerificationEmail(email, emailToken)
+        res.status(200).json('email sent')
+    })
+
 }
 
 function tutorLogin(req,res){
@@ -101,11 +116,52 @@ function studentLogin(req,res){
     res.json('working')
 }
 
+async function verifyEmail(req,res){
+
+    const {token} = req.query
+
+
+    if (token == null){return res.status(401).json('Token Not Found')}
+
+
+    
+    const email = await auth.jwt.verify(token, process.env.SECRET, (err, emailInfo) => {
+        if(err){
+          return res.status(403).json('Token No Longer Valid')
+        }
+        return emailInfo.email
+    })
+
+    console.log(email)
+
+    Tutor.find({email: email})
+    .then(result => {
+
+        console.log('inside')
+        
+        userId = result[0]._id
+
+        console.log(userId)
+
+        Tutor.findByIdAndUpdate(userId, {verified: true})
+        .then(result => {
+            console.log('here')
+            res.redirect(process.env.profileReroute)
+        })
+    })
+    .catch(err => res.status(500).json(err))
+
+    
+
+
+}
+
 module.exports = {
     login,
     tutorSignup,
     studentSignup,
     initiateEmailVerification,
     tutorLogin,
-    studentLogin
+    studentLogin,
+    verifyEmail,
 }
