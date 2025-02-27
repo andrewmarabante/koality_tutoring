@@ -1,4 +1,4 @@
-import EditPhoto from './EditPhoto';
+import GettingStarted from './GettingStarted';
 import Profile from './Profile';
 import TutorNavbar from './TutorNavbar';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ export default function TutorHome(){
             <div className="absolute top-0 left-0 h-screen w-screen bg-[url('/assets/blueSkyVerticalBackground.svg')] lg:bg-[url('/assets/blueSkyHorizontalBackground.svg')] bg-cover z-0"></div>
             <div className='grow z-50 flex justify-center items-center overflow-hidden w-screen'>
                 {section === 'Profile' && <Profile />}
-                {section === 'Getting Started' && <EditPhoto />}
+                {section === 'Getting Started' && <GettingStarted />}
             </div>
         </div>
     )
