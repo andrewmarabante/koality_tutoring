@@ -11,6 +11,7 @@ import BigmanLogin from './Components/Public/BigmanLogin.jsx';
 
 
 import TutorHome from'./Components/Tutors/TutorHome.jsx'
+import StudentHome from'./Components/Students/StudentHome.jsx'
 
 
 const router = createBrowserRouter([
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
   {
     path: '/tutor',
     element: <TutorHome />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/student',
+    element: <StudentHome />,
     errorElement: <Error />,
   },
 ]);

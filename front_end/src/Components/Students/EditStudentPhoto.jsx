@@ -5,12 +5,12 @@ import Button from '@mui/material/Button';
 import { CircularProgress } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-export default function EditPhoto({imgSrc, exitEdit}){
+export default function EditStudentPhoto({imgSrc, exitEdit}){
 
     const [profilePic, setProfilePic] = useState(null)
     const [uploading, setUploading] = useState(false)
 
-    const server = import.meta.env.VITE_SERVER + 'tutor/changeProfilePic'
+    const server = import.meta.env.VITE_SERVER + 'student'
     const [sliderVal, setSliderVal] = useState(50)
     
     const imageRef = useRef(null)
@@ -159,7 +159,7 @@ export default function EditPhoto({imgSrc, exitEdit}){
         formData.append('width', data.cropWidth)
     
         
-        fetch( server , {
+        fetch( server +'/changeProfilePic', {
             method: 'POST',
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -170,7 +170,7 @@ export default function EditPhoto({imgSrc, exitEdit}){
         })
             .then((result) => result.json())
             .then(data => {
-                window.location.href = '/tutor'
+                window.location.href = '/student'
             })
             .catch(err => console.log(err))
     }

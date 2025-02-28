@@ -6,12 +6,16 @@ const scheduleSchema = new Schema({
     availability : {
         type : Array,
         required : true,
-        index: true,
     },
     week: {
         start: { type: Date, required: true },
         end: { type: Date, required: true }
-      }
+      },
+      creator : {
+        type : String,
+        required : true,
+        index: true,
+    },
 
 
 }, {timestamps: true})

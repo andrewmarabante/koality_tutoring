@@ -1,6 +1,7 @@
 const auth = require('../auth')
 const User = require('../models/user');
 const Tutor = require('../models/tutor');
+const Student = require('../models/student');
 
 
  function login(req, res){
@@ -67,8 +68,37 @@ function tutorSignup(req,res){
 }
 
 function studentSignup(req,res){
-    console.log(req.body)
-    res.json('student')
+
+    Student.find({email : req.body.username})
+    .then(async result => {
+
+        if(result.length === 0){
+
+            const hashedPassword = await auth.hashPassword(req.body.password)
+            const details = {
+                email: req.body.username,
+                password: hashedPassword,
+                first_name: 'First Name',
+                last_name: 'Last Name',
+                emailVerified: false,
+                stripeVerified: false,
+                photo: 'https://res.cloudinary.com/djg9ttgrn/image/upload/v1712280077/s8vwpudk7bhwkp0axgng.jpg',
+            }
+            const newStudent = new Student(details)
+
+            newStudent.save()
+            .then(() => {
+                res.json('saved')
+            })
+            .catch((err) => {
+                res.status(500).json(err)
+            })
+
+        }
+        else{
+            res.json('email taken')
+        }
+    })
 }
 
 async function initiateEmailVerification(req,res){
@@ -112,8 +142,28 @@ function tutorLogin(req,res){
 }
 
 function studentLogin(req,res){
-    console.log('studentLogin')
-    res.json('working')
+    email = req.body.username
+    Student.find({email: email})
+    .then(async result => {
+        if(result.length === 0){
+            res.json('Incorrect')
+        }
+        else{
+            const enteredPassword = req.body.password;
+            const storedHash = result[0].password
+            
+            const isMatch = await auth.verifyPassword(enteredPassword, storedHash)
+            
+            if(isMatch){
+                accessToken = auth.createToken(result[0]._id)
+                res.cookie('studentjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
+                res.json('Success')
+            }else{
+                res.json('Incorrect')
+            }
+            
+        }
+    })
 }
 
 async function verifyEmail(req,res){

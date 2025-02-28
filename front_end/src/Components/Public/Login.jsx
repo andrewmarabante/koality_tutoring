@@ -88,8 +88,8 @@ export default function Login(){
             })
             .then(result => result.json())
             .then(data => {
-                console.log(data)
-            })
+                if(data === 'Success'){window.location.href = '/student'}
+                data === 'Incorrect' && setMessage('Incorrect Credentials')            })
             .catch(err => console.log(err))
         }
 

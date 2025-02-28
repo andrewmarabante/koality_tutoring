@@ -47,6 +47,23 @@ async function verifyPassword(enteredPassword, storedHash) {
     })
 }
 
+function verifyStudentToken(req,res,next){
+
+  const accessToken = req.cookies.studentjwt; 
+
+  if (accessToken == null){return res.status(401).json('401')}
+  jwt.verify(accessToken, process.env.SECRET, (err, user) => {
+      if(err){
+        if(res.websocket){
+          return next('403')
+        }
+        return res.status(403).json('403')
+      }
+      req.userInfo = user
+      next()
+  })
+}
+
 function verifyBigmanToken(req,res,next){
 
   const accessToken = req.cookies.bigmanjwt;
@@ -103,6 +120,7 @@ function sendVerificationEmail(userEmail, token) {
     verifyPassword,
     createToken,
     verifyTutorToken,
+    verifyStudentToken,
     verifyBigmanToken,
     generateVerificationToken,
     sendVerificationEmail,

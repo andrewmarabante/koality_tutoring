@@ -17,6 +17,18 @@ router.post('/changeProfilePic', auth.verifyTutorToken, upload.single('image'), 
 
 router.post('/updateProfile', auth.verifyTutorToken, tutorController.updateProfile)
 
+router.get('/getSchedule', auth.verifyTutorToken, tutorController.getSchedule)
+
+router.post('/createSchedule', auth.verifyTutorToken, tutorController.createSchedule)
+
+router.post('/createMessage', auth.verifyTutorToken, upload.array('image', 5), tutorController.createMessage)
+
+router.get('/getChats', auth.verifyTutorToken , tutorController.getChats)
+
+router.get('/getStudents', auth.verifyTutorToken , tutorController.getStudents)
+
+
+
 
 
 

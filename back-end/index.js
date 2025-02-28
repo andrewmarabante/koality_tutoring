@@ -10,6 +10,7 @@ var bigmanRouter = require('./routes/bigman');
 var signupRouter = require('./routes/signup')
 var loginRouter = require('./routes/login')
 var tutorRouter = require('./routes/tutor')
+var studentRouter = require('./routes/student')
 
 const mongoose = require('mongoose');
 
@@ -41,6 +42,7 @@ app.use('/bigman', bigmanRouter);
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/tutor', tutorRouter);
+app.use('/student', studentRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {

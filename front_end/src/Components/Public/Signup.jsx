@@ -94,7 +94,8 @@ export default function Signup({changeSection}){
             })
             .then(result => result.json())
             .then(data => {
-                console.log(data)
+                data === 'email taken' && setMessage('Email Already Taken')
+                data === 'saved' && changeSection('Login')
             })
             .catch(err => console.log(err))
         }

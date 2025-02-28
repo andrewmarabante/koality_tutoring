@@ -1,4 +1,7 @@
 const Tutor = require('../models/tutor');
+const Schedule = require('../models/schedule');
+const Message = require('../models/message');
+
 const cloudinary = require('../cloudinary');
 
 function loadProfile(req, res){
@@ -80,8 +83,83 @@ function updateProfile(req, res){
 
 }
 
+function getSchedule(req,res){
+
+    const userId = req.userInfo.userId
+
+    Schedule.aggregate([
+        {
+            $match: { 'creator': userId } //grabs only the users schedules
+        },
+        {
+          $sort: { createdAt: -1 } // Sort by creation date (newest first)
+        },
+        {
+          $group: {
+            _id: { 
+                start: { $dateToString: { format: "%Y-%m-%d",           date: {
+                    $dateFromParts: {
+                      year: { $year: { date: "$week.start", timezone: "America/Los_Angeles" } }, 
+                      month: { $month: { date: "$week.start", timezone: "America/Los_Angeles" } }, 
+                      day: { $dayOfMonth: { date: "$week.start", timezone: "America/Los_Angeles" } }
+                    }
+                  } } } 
+              }, // Group by week.start
+            latestSchedule: { $first: "$$ROOT" } // Pick the first (latest) document in each group
+          }
+        },
+        {
+          $replaceRoot: { newRoot: "$latestSchedule" } // Replace result structure
+        }
+      ])
+      .then(result => {
+        res.status(200).json(result)
+      })
+      .catch(err => res.status(500).json(err))
+}
+
+function createSchedule(req,res){
+
+    const userId = req.userInfo.userId
+    const availability = req.body.availability;
+    const week = req.body.week;
+
+    const newScheduleDetails = {
+        availability: availability,
+        week: week,
+        creator: userId,
+    }
+
+    const newSchedule =  new Schedule(newScheduleDetails)
+
+    newSchedule.save()
+    .then(() => res.status(200).json('saved'))
+    .catch(err => res.status(500).json(err))
+}
+
+function createMessage(req,res){
+    console.log(req.body)
+    res.json('working')
+}
+
+function getChats(req,res){
+    res.json('chats')
+}
+
+function getStudents(req,res){
+
+    //for now we will just pass in a fake student array
+    res.json('students')
+
+}
+
 module.exports = {
     loadProfile,
     changeProfilePic,
-    updateProfile
+    updateProfile,
+    getSchedule,
+    createSchedule,
+    createMessage,
+    getChats,
+    getStudents
 }

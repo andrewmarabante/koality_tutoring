@@ -51,6 +51,10 @@ const tutorSchema = new Schema({
         type : String,
         required: false
       },
+      students: {
+        type : Array,
+        required: false
+      },
 
 
 }, {timestamps: true})
