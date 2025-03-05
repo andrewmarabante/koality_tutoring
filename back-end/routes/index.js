@@ -7,7 +7,5 @@ const indexControllers = require('../controllers/indexController.js')
 
 router.post('/login', indexControllers.login)
 
-router.get('/verifyEmail', indexControllers.verifyEmail)
-
 
 module.exports = router;

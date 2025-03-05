@@ -85,8 +85,38 @@ function generateVerificationToken(email){
   return jwt.sign({ email }, process.env.SECRET , { expiresIn: '1h' });
 };
 
-function sendVerificationEmail(userEmail, token) {
-  const verificationLink = `${process.env.backendDomain}/verifyEmail?token=${token}`;
+function sendTutorVerificationEmail(userEmail, token) {
+  const verificationLink = `${process.env.backendDomain}/tutor/verifyEmail?token=${token}`;
+  const mailOptions = {
+    from: process.env.companyEmail,
+    to: userEmail,
+    subject: 'Email Verification',
+    text: `
+    Dear User,
+    Please verify your email by clicking the following link:
+    ${verificationLink}
+    If you did not create an account with us, please disregard this email!
+    `
+  };
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.companyUsername,
+      pass: process.env.companyPassword
+    }
+  });
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Email sent: ' + info.response);
+  });
+}
+
+function sendStudentVerificationEmail(userEmail, token) {
+  const verificationLink = `${process.env.backendDomain}/student/verifyEmail?token=${token}`;
   const mailOptions = {
     from: process.env.companyEmail,
     to: userEmail,
@@ -123,6 +153,7 @@ function sendVerificationEmail(userEmail, token) {
     verifyStudentToken,
     verifyBigmanToken,
     generateVerificationToken,
-    sendVerificationEmail,
+    sendTutorVerificationEmail,
+    sendStudentVerificationEmail,
     jwt,
   }

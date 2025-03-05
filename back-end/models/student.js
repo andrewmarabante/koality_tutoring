@@ -44,6 +44,9 @@ const studentSchema = new Schema({
     frequency : {
         type : String,
     },
+    customerId : {
+        type : String,
+    },
 
 }, {timestamps: true})
 

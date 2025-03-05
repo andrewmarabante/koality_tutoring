@@ -39,17 +39,9 @@ const tutorSchema = new Schema({
         type : String,
         required: true
       },
-      subject1: {
-        type : String,
-        required: false
-      },
-      subject2: {
-        type : String,
-        required: false
-      },
-      subject3: {
-        type : String,
-        required: false
+      subjects: {
+        type : Array,
+        required: true
       },
       students: {
         type : Array,

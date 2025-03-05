@@ -48,7 +48,8 @@ function tutorSignup(req,res){
                 interviewed: false,
                 verified: false,
                 photo: 'https://res.cloudinary.com/djg9ttgrn/image/upload/v1712280077/s8vwpudk7bhwkp0axgng.jpg',
-                bio: 'default'
+                bio: 'default',
+                subjects: [],
             }
             const newTutor = new Tutor(details)
 
@@ -101,19 +102,6 @@ function studentSignup(req,res){
     })
 }
 
-async function initiateEmailVerification(req,res){
-
-    const userId = req.userInfo.userId;
-
-    Tutor.find({_id: userId})
-    .then(async result => {
-        const emailToken = auth.generateVerificationToken(result[0].email)
-        const email = result[0].email
-        await auth.sendVerificationEmail(email, emailToken)
-        res.status(200).json('email sent')
-    })
-
-}
 
 function tutorLogin(req,res){
 
@@ -166,52 +154,11 @@ function studentLogin(req,res){
     })
 }
 
-async function verifyEmail(req,res){
-
-    const {token} = req.query
-
-
-    if (token == null){return res.status(401).json('Token Not Found')}
-
-
-    
-    const email = await auth.jwt.verify(token, process.env.SECRET, (err, emailInfo) => {
-        if(err){
-          return res.status(403).json('Token No Longer Valid')
-        }
-        return emailInfo.email
-    })
-
-    console.log(email)
-
-    Tutor.find({email: email})
-    .then(result => {
-
-        console.log('inside')
-        
-        userId = result[0]._id
-
-        console.log(userId)
-
-        Tutor.findByIdAndUpdate(userId, {verified: true})
-        .then(result => {
-            console.log('here')
-            res.redirect(process.env.profileReroute)
-        })
-    })
-    .catch(err => res.status(500).json(err))
-
-    
-
-
-}
 
 module.exports = {
     login,
     tutorSignup,
     studentSignup,
-    initiateEmailVerification,
     tutorLogin,
     studentLogin,
-    verifyEmail,
 }

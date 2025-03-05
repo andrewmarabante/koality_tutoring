@@ -1,6 +1,8 @@
 const Tutor = require('../models/tutor');
 const Schedule = require('../models/schedule');
 const Message = require('../models/message');
+const auth = require('../auth')
+
 
 const cloudinary = require('../cloudinary');
 
@@ -21,9 +23,7 @@ function loadProfile(req, res){
             verified: user.verified,
             photo: user.photo,
             bio: user.bio,
-            subject1: user.subject1,
-            subject2: user.subject2,
-            subject3: user.subject3,
+            subjects: user.subjects
         }
 
         res.status(200).json(userInfo)
@@ -153,6 +153,53 @@ function getStudents(req,res){
 
 }
 
+async function initiateEmailVerification(req,res){
+
+    const userId = req.userInfo.userId;
+
+    Tutor.find({_id: userId})
+    .then(async result => {
+        const emailToken = auth.generateVerificationToken(result[0].email)
+        const email = result[0].email
+        await auth.sendTutorVerificationEmail(email, emailToken)
+        res.status(200).json('email sent')
+    })
+
+}
+
+async function verifyEmail(req,res){
+
+    const {token} = req.query
+
+
+    if (token == null){return res.status(401).json('Token Not Found')}
+
+
+    
+    const email = await auth.jwt.verify(token, process.env.SECRET, (err, emailInfo) => {
+        if(err){
+          return res.status(403).json('Token No Longer Valid')
+        }
+        return emailInfo.email
+    })
+
+    Tutor.find({email: email})
+    .then(result => {
+        
+        userId = result[0]._id
+
+        Tutor.findByIdAndUpdate(userId, {verified: true})
+        .then(result => {
+            res.redirect(process.env.tutorReroute)
+        })
+    })
+    .catch(err => res.status(500).json(err))
+
+    
+
+
+}
+
 module.exports = {
     loadProfile,
     changeProfilePic,
@@ -161,5 +208,7 @@ module.exports = {
     createSchedule,
     createMessage,
     getChats,
-    getStudents
+    getStudents,
+    initiateEmailVerification,
+    verifyEmail
 }

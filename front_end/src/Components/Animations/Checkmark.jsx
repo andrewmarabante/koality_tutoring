@@ -8,8 +8,8 @@ const AnimatedCheckmark = () => (
     fill="none"
     stroke="lightgreen" // Set stroke color to green
     strokeWidth={2} // Increase stroke width for a bolder checkmark
-    width="48" // Increase width
-    height="48" // Increase height
+    width="15" // Increase width
+    height="15" // Increase height
   >
     <motion.path
       strokeLinecap="round"
@@ -17,7 +17,7 @@ const AnimatedCheckmark = () => (
       d="M4.5 12.75l6 6 9-13.5"
       initial={{ pathLength: 0 }}
       animate={{ pathLength: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 1 }}
     />
   </motion.svg>
 );

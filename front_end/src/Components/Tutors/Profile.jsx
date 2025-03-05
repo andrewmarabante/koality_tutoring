@@ -6,6 +6,7 @@ import EditPhoto from "./EditPhoto"
 import { CircularProgress } from "@mui/material";
 import validator from 'validator';
 import AnimatedCheckmark from "../Animations/Checkmark"
+import SubjectSelector from "./SubjectSelector"
 
 
 export default function Profile(){
@@ -17,6 +18,7 @@ export default function Profile(){
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState(null)
     const [posted, setPosted] = useState(false)
+
 
     useEffect(() => {
 
@@ -68,9 +70,6 @@ export default function Profile(){
         const lastName = e.target.lastName.value
         const email = e.target.email.value
         const rate = e.target.rate.value
-        const subject1 = e.target.subject1.value
-        const subject2 = e.target.subject2.value
-        const subject3 = e.target.subject3.value
         const bio = e.target.bio.value
         let sanitizedEmail
 
@@ -90,9 +89,7 @@ export default function Profile(){
             last_name: lastName,
             email: email,
             rate: rate,
-            subject1: subject1,
-            subject2: subject2,
-            subject3: subject3,
+            subjects: userInfo.subjects,
             bio: bio
         }
 
@@ -131,6 +128,26 @@ export default function Profile(){
             }
         }
 
+
+    function handleSubjectAdd(newSub){
+
+        if(userInfo.subjects.includes(newSub)){
+            return
+        }
+
+        setUserInfo(prev => ({
+            ...prev,
+            subjects: [...prev.subjects, newSub]
+        }))
+    }
+
+    function handleSubjectRemove(oldSub){
+        setUserInfo(prev => ({
+            ...prev,
+            subjects: prev.subjects.filter(subject => subject !== oldSub)
+        }));
+    }
+
     return(
         <form className="flex justify-start items-center h-11/12 w-9/12 overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
             {!edit ? <div className="flex flex-col items-center w-full">
@@ -155,8 +172,8 @@ export default function Profile(){
                     </div>
                     {!userInfo.verified ? <div className="text-red-300  text-xs text-center p-1">You email has not been verified</div>: <div className="text-green-300  text-xs text-center p-1">Verified</div>}
                     <div className="flex">
-                        {sent && <div className="text-xs font-roboto-title-italic p-1">Email sent</div>}
-                        {!userInfo.verified && <button className="text-xs border-blue-200 border w-fit rounded-lg py-1 px-2" onClick={handleEmailSend}>{!sent ? 'Send Link' : 'Resend'}</button>}
+                        {sent && <div class Name="text-xs font-roboto-title-italic p-1">Email sent</div>}
+                        {!userInfo.verified && <button className="text-xs border-blue-200 border w-fit rounded-lg py-1 px-2" type="button" onClick={handleEmailSend}>{!sent ? 'Send Link' : 'Resend'}</button>}
                     </div>
                 </div>
                 <div className="flex justify-between flex-col p-2">
@@ -164,47 +181,13 @@ export default function Profile(){
                     <input type="text" placeholder={userInfo.rate} className="text-center border-gray-300 border rounded-lg p-1" name="rate"/>
                 </div>
 
-                <div className="flex justify-between flex-col p-2 text-xs">
-                    <div className="text-lg text-center">Subjects:</div>
-                    <div className="font-roboto-title-italic text-xs text-center">(3 max)</div>
-                    <div className="flex p-2 gap-2">
-                        <label htmlFor="subject1">Subject 1:</label>
-                        <select name="subject1" placeholder='Subject 1' id="subject1" value={userInfo.subject1} className="text-center" onChange={(e) => setUserInfo(prevUserInfo => ({...prevUserInfo, subject1: e.value,}))}>
-                            <option value="NA">None</option>
-                            <option value="Math">Math</option>
-                            <option value="English">English</option>
-                            <option value="Econ">Econ</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Spanish">Spanish</option>
-
-                        </select>
-                    </div>
-                    <div className="flex p-2 gap-2">
-                        <label htmlFor="subject2">Subject 2:</label>
-                        <select name="subject2" placeholder='Subject 2' id="subject2" value={userInfo.subject2} className="text-center" onChange={(e) => setUserInfo(prevUserInfo => ({...prevUserInfo, subject2: e.value,}))}>
-                            <option value="NA">None</option>
-                            <option value="Math">Math</option>
-                            <option value="English">English</option>
-                            <option value="Econ">Econ</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Spanish">Spanish</option>
-
-                        </select>
-                    </div>
-                    <div className="flex p-2 gap-2">
-                        <label htmlFor="subject3">Subject 3:</label>
-                        <select name="subject3" placeholder='Subject 3' id="subject3" value={userInfo.subject3} className="text-center" onChange={(e) => setUserInfo(prevUserInfo => ({...prevUserInfo, subject3: e.value,}))}>
-                            <option value="NA">None</option>
-                            <option value="Math">Math</option>
-                            <option value="English">English</option>
-                            <option value="Econ">Econ</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Spanish">Spanish</option>
-
-                        </select>
+                <div className="flex items-center flex-col p-2 text-xs w-full">
+                    <div className="text-lg text-center border-b mb-2">Subjects:</div>
+                    {userInfo.subjects && userInfo.subjects.length > 0 ? <div className={`${userInfo.subjects.length > 1 && 'grid grid-cols-2'} ${userInfo.subjects.length > 2 && 'grid grid-cols-3 gap-2 py-3'} w-9/12 text-center p-2 my-2 mb-5 border rounded-xl border-gray-300`}>{userInfo.subjects.map(subject => <div onClick={() => handleSubjectRemove(subject)}>{subject}</div>)}</div>
+                    :<div className="text-base text-center border rounded-xl p-1 w-9/12 border-gray-300 px-5">None</div>}
+                    <div className="w-9/12 flex flex-col justify-start items-center">
+                        <div className="p-1">Add Subjects:</div>
+                        <SubjectSelector handleSubjectAdd={handleSubjectAdd}/>
                     </div>
                 </div>
                 <div className="flex justify-between flex-col p-2 w-9/12">
@@ -218,10 +201,11 @@ export default function Profile(){
                 </div>
                 <div className={`flex items-center justify-center`}>
                     <button className="text-lg p-2 rounded-lg px-5 border-gray-300 border" type="submit">Update</button>
-                    {message && <div className="text-red-300 text-xs">{message}</div>}
                     {loading && <CircularProgress size={40} className="ml-2"/>}
                     {!loading && posted && <AnimatedCheckmark />}
                 </div>
+                {message && <div className="text-red-300 text-xs">{message}</div>}
+
 
                 <div className={`mt-3 flex gap-5 items-center ${!userInfo.interviewed ? 'border-red-300' : 'border-green-300'} border rounded-lg p-1 px-3`}>
                     <div className="text-sm text-center">Interviewed:</div>

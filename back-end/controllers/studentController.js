@@ -2,6 +2,10 @@ const Tutor = require('../models/tutor');
 const Student = require('../models/student');
 const Schedule = require('../models/schedule');
 const Message = require('../models/message');
+const auth = require('../auth')
+const stripe = require("stripe")(process.env.stripeSecret)
+
+
 
 const cloudinary = require('../cloudinary');
 
@@ -10,9 +14,20 @@ function loadProfile(req,res){
     const userId = req.userInfo.userId
 
     Student.find({_id: userId})
-    .then(result => {
+    .then(async result => {
 
         const user = result[0]
+
+        let paymentMethods = []
+
+        if(user.customerId){
+            try {
+                const paymentMethodsObj = await stripe.paymentMethods.list({ customer: user.customerId });
+                paymentMethods = paymentMethodsObj.data
+            } catch (error) {
+                console.error('Error fetching payment methods:', error);
+              }
+        }
 
         const userInfo = {
             firstName: user.first_name,
@@ -21,6 +36,7 @@ function loadProfile(req,res){
             emailVerified: user.emailVerified,
             stripeVerified: user.stripeVerified,
             photo: user.photo,
+            paymentMethods: paymentMethods
         }
 
         res.status(200).json(userInfo)
@@ -28,17 +44,30 @@ function loadProfile(req,res){
     .catch(err => res.status(500).json(err))
 }
 
-function initiateEmailVerification(req,res){
-    res.json('email')
-}
+function updateProfile(req, res){
+    const userId = req.userInfo.userId;
 
-function updateProfile(req,res){
-    res.json('Updated')
+    const newData = req.body
+
+    if(newData.email !== ''){
+        newData.emailVerified = false
+    }
+
+    const cleanedData = Object.fromEntries(
+        Object.entries(newData).filter(([_, value]) => value !== '')
+      );
+    
+
+    Student.findByIdAndUpdate(userId, {$set: cleanedData})
+    .then(() => {
+        res.status(200).json('updated')
+    })
+    .catch(err => res.status(500).json(err))
+
 }
 
 function changeProfilePic(req, res){
 
-    console.log(req.body)
 
     left = ',x_'+req.body.left;
     top = ',y_'+req.body.top;
@@ -68,9 +97,153 @@ function changeProfilePic(req, res){
     })
 }
 
+async function initiateEmailVerification(req,res){
+
+    const userId = req.userInfo.userId;
+
+    Student.find({_id: userId})
+    .then(async result => {
+        const emailToken = auth.generateVerificationToken(result[0].email)
+        const email = result[0].email
+        await auth.sendStudentVerificationEmail(email, emailToken)
+        res.status(200).json('email sent')
+    })
+
+}
+
+async function verifyEmail(req,res){
+
+    const {token} = req.query
+
+
+    if (token == null){return res.status(401).json('Token Not Found')}
+
+
+    
+    const email = await auth.jwt.verify(token, process.env.SECRET, (err, emailInfo) => {
+        if(err){
+          return res.status(403).json('Token No Longer Valid')
+        }
+        return emailInfo.email
+    })
+
+    Student.find({email: email})
+    .then(result => {
+        
+        userId = result[0]._id
+
+        Student.findByIdAndUpdate(userId, {emailVerified: true})
+        .then(result => {
+            res.redirect(process.env.studentReroute)
+        })
+    })
+    .catch(err => res.status(500).json(err))
+
+    
+
+
+}
+
+function createPaymentMethod(req,res){
+    const userId = req.userInfo.userId
+    const {email, payment_method} = req.body;
+
+    Student.find({_id : userId})
+    .then( async result => {
+        const customerId = result[0].customerId
+        if(customerId){ 
+
+            try {
+
+                const paymentMethods = await stripe.paymentMethods.list({
+                    customer: customerId,
+                    type: 'card',
+                });
+
+                if(paymentMethods.data.length > 0){
+                    await stripe.paymentMethods.detach(paymentMethods.data[0].id);
+                }
+                
+                await stripe.paymentMethods.attach(payment_method, { customer: customerId });
+                await stripe.customers.update(customerId, { invoice_settings: { default_payment_method: payment_method }});
+
+                try{
+                    const intent = await stripe.setupIntents.create({
+                        customer: customerId,
+                        payment_method: payment_method,
+                        confirm: true,
+                        automatic_payment_methods: { enabled: true },
+                        return_url: 'http://localhost:5173/student',
+                    });
+    
+                    if (intent.status === "succeeded") {
+                        res.status(200).json('success')
+                    }else{
+                        await stripe.paymentMethods.detach(payment_method, { customer: customerId });
+                        res.status(200).json('failure')
+                    }
+                } catch (error) {
+                    res.status(500).json(error)
+                }
+              
+
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+
+        }else{
+            const customer = await stripe.customers.create({
+            email: email,
+            payment_method: payment_method,
+            invoice_settings: {
+                default_payment_method: payment_method,
+            },
+            });
+
+            try{
+                const intent = await stripe.paymentIntents.create({
+                    amount: 0, 
+                    currency: "usd",
+                    payment_method: payment_method,
+                    customer: customer.id,
+                    confirm: true,
+                });
+
+                if (intent.status === "succeeded") {
+
+                    Student.findByIdAndUpdate(userId, { customerId: customer.id, defaultPayment: payment_method })
+                    .then(() => res.status(200).json('success'))
+                    .catch(err => res.status(500).json(err))   
+                                 
+                }else{
+                    await stripe.paymentMethods.detach(payment_method, { customer: customerId });
+                    res.status(200).json('no funds')
+                }
+            } catch (error) {
+                res.status(500).json(error)
+            }
+
+            
+        }
+    })
+}
+
+function getTutors(req,res){
+
+    Tutor.find({})
+    .then(result => {
+        const verifiedTutors = result.filter(tutor => tutor.interviewed === true)
+        res.status(200).json(verifiedTutors)
+    })
+    .catch(err => res.status(500).json(err))
+}
+
 module.exports = {
     loadProfile,
-    initiateEmailVerification,
     updateProfile,
-    changeProfilePic
+    changeProfilePic,
+    initiateEmailVerification,
+    verifyEmail,
+    createPaymentMethod,
+    getTutors
 }

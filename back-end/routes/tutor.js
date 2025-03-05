@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const tutorController = require('../controllers/tutorController.js')
-const indexController = require('../controllers/indexController.js')
 const upload = require('../multer')
 
 const auth = require('../auth.js')
@@ -11,7 +10,7 @@ const auth = require('../auth.js')
 
 router.get('/profile', auth.verifyTutorToken , tutorController.loadProfile)
 
-router.get('/emailVerification', auth.verifyTutorToken , indexController.initiateEmailVerification)
+router.get('/emailVerification', auth.verifyTutorToken , tutorController.initiateEmailVerification)
 
 router.post('/changeProfilePic', auth.verifyTutorToken, upload.single('image'), tutorController.changeProfilePic)
 
@@ -26,6 +25,9 @@ router.post('/createMessage', auth.verifyTutorToken, upload.array('image', 5), t
 router.get('/getChats', auth.verifyTutorToken , tutorController.getChats)
 
 router.get('/getStudents', auth.verifyTutorToken , tutorController.getStudents)
+
+router.get('/verifyEmail', tutorController.verifyEmail)
+
 
 
 
