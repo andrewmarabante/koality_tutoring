@@ -19,9 +19,18 @@ const tutorSchema = new Schema({
         type : String,
         required: true
       },
+    education: {
+        type : String,
+      },
     rate: {
         type : Number,
         required: true
+      },
+      hours: {
+        type : Number,
+      },
+      rating: {
+        type : Number,
       },
     verified: {
         type : Boolean,
@@ -35,6 +44,9 @@ const tutorSchema = new Schema({
         type : String,
         required: true
       },
+      title: {
+        type : String,
+      },
       photo: {
         type : String,
         required: true
@@ -43,11 +55,16 @@ const tutorSchema = new Schema({
         type : Array,
         required: true
       },
+      reviews: {
+        type : Array,
+      },
       students: {
         type : Array,
         required: false
       },
-
+      topReview: {
+        type : String,
+      },
 
 }, {timestamps: true})
 

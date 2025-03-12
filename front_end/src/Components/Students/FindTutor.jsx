@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import SubjectSelector from "./SubjectSelector"
 import ViewTutors from "./ViewTutors"
+import OpenTutorProfile from "./OpenTutorProfile"
 
 
 export default function FindTutor(){
@@ -9,6 +10,8 @@ export default function FindTutor(){
     const[paymentVerified, setPaymentVerified] = useState()
     const [subject, setSubject] = useState(null)
     const [tutors, setTutors] = useState(null)
+    const [viewTutor, setViewTutor] = useState(false)
+    const [currentTutor, setCurrentTutor] = useState(null)
 
     const server = import.meta.env.VITE_SERVER + 'student'
 
@@ -49,8 +52,21 @@ export default function FindTutor(){
         setTimeout(() => setSubject(newSubject), 1500)
     }
     
+    function openViewTutor(id){
+        const tempTutor = tutors.find(tutor => tutor._id  === id)
+        setTimeout(()=>{
+            setCurrentTutor(tempTutor)
+            setViewTutor(true)}, 100)
+    }
+
+    function closeViewTutor(){
+        setTimeout(()=>{
+            setViewTutor(false)}
+            , 100)
+    }
+    
     return(
-        <div className="h-11/12 w-11/12">
+        <div className="h-11/12 w-11/12 relative">
             <div className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2">
 
                 {emailVerified && !subject ?
@@ -60,12 +76,16 @@ export default function FindTutor(){
                         <SubjectSelector handleSubjectChange = {handleSubjectChange}/>
                     </div>
                 </div>
-                :<div className="p-1">
+                : !viewTutor  && <div className="p-1">
                     Showing All Private Tutors for <span className="font-roboto-title-italic">{subject}</span> <span className="text-blue-500 font-roboto-title-italic text-xs" onClick={() => setTimeout(()=>setSubject(null), 100)}>Change</span>
                 </div>}
 
-                {emailVerified && subject && 
-                <ViewTutors tutors= {tutors} subject = {subject} />
+                {emailVerified && subject && !viewTutor &&
+                <ViewTutors tutors= {tutors} subject = {subject} openViewTutor={openViewTutor}/>
+                }
+
+                {emailVerified && subject && viewTutor &&
+                <OpenTutorProfile tutor= {currentTutor} closeViewTutor= {closeViewTutor}/>
                 }
 
                 {!emailVerified && <div className="text-2xl p-10">

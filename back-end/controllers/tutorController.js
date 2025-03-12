@@ -23,7 +23,9 @@ function loadProfile(req, res){
             verified: user.verified,
             photo: user.photo,
             bio: user.bio,
-            subjects: user.subjects
+            subjects: user.subjects,
+            title: user.title,
+            education: user.education,
         }
 
         res.status(200).json(userInfo)
@@ -66,6 +68,7 @@ function updateProfile(req, res){
 
     const newData = req.body
 
+
     if(newData.email !== ''){
         newData.verified = false
     }
@@ -74,6 +77,7 @@ function updateProfile(req, res){
         Object.entries(newData).filter(([_, value]) => value !== '')
       );
     
+      console.log(cleanedData)
 
     Tutor.findByIdAndUpdate(userId, {$set: cleanedData})
     .then(() => {

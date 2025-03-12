@@ -176,6 +176,7 @@ export default function EditPhoto({imgSrc, exitEdit}){
     }
 
     function handlePicChange(e) {
+        console.log('hit')
         setProfilePic(e.target.files[0])
     }
 
@@ -192,7 +193,7 @@ export default function EditPhoto({imgSrc, exitEdit}){
                 {!uploading ? <div>
                     <div className="font-roboto-title-italic text-xs p-1 text-center">Click to move the circle!</div>
                     <div className=" p-2 z-50 w-full flex flex-col gap-5 items-center justify-center">
-                        <input type="file" onChange={handlePicChange} className="hidden" id="upload-file"/>
+                    <input type="file" onChange={handlePicChange} className="hidden" id="upload-file"/>
                         <label htmlFor="upload-file">
                             <Button
                                 component="span"

@@ -7,6 +7,7 @@ import { CircularProgress } from "@mui/material";
 import validator from 'validator';
 import AnimatedCheckmark from "../Animations/Checkmark"
 import SubjectSelector from "./SubjectSelector"
+import {v4} from 'uuid'
 
 
 export default function Profile(){
@@ -71,6 +72,9 @@ export default function Profile(){
         const email = e.target.email.value
         const rate = e.target.rate.value
         const bio = e.target.bio.value
+        const title = e.target.title.value
+        const education = e.target.education.value
+
         let sanitizedEmail
 
         if(email !== ''){
@@ -90,7 +94,9 @@ export default function Profile(){
             email: email,
             rate: rate,
             subjects: userInfo.subjects,
-            bio: bio
+            bio: bio,
+            title: title,
+            education: education,
         }
 
         setLoading(true)
@@ -178,18 +184,31 @@ export default function Profile(){
                 </div>
                 <div className="flex justify-between flex-col p-2">
                     <div className="text-lg text-center">Rate:</div>
-                    <input type="text" placeholder={userInfo.rate} className="text-center border-gray-300 border rounded-lg p-1" name="rate"/>
+                    <input type="number" placeholder={userInfo.rate} className="text-center border-gray-300 border rounded-lg p-1" name="rate"/>
                 </div>
+
+
 
                 <div className="flex items-center flex-col p-2 text-xs w-full">
                     <div className="text-lg text-center border-b mb-2">Subjects:</div>
-                    {userInfo.subjects && userInfo.subjects.length > 0 ? <div className={`${userInfo.subjects.length > 1 && 'grid grid-cols-2'} ${userInfo.subjects.length > 2 && 'grid grid-cols-3 gap-2 py-3'} w-9/12 text-center p-2 my-2 mb-5 border rounded-xl border-gray-300`}>{userInfo.subjects.map(subject => <div onClick={() => handleSubjectRemove(subject)}>{subject}</div>)}</div>
+                    {userInfo.subjects && userInfo.subjects.length > 0 ? <div className={`${userInfo.subjects.length > 1 && 'grid grid-cols-2'} ${userInfo.subjects.length > 2 && 'grid grid-cols-3 gap-2 py-3'} w-9/12 text-center p-2 my-2 mb-5 border rounded-xl border-gray-300`}>{userInfo.subjects.map(subject => <div key={v4()} onClick={() => handleSubjectRemove(subject)}>{subject}</div>)}</div>
                     :<div className="text-base text-center border rounded-xl p-1 w-9/12 border-gray-300 px-5">None</div>}
                     <div className="w-9/12 flex flex-col justify-start items-center">
                         <div className="p-1">Add Subjects:</div>
                         <SubjectSelector handleSubjectAdd={handleSubjectAdd}/>
                     </div>
                 </div>
+
+                <div className="flex items-center flex-col p-2 w-full">
+                    <div className="text-lg text-center">Title:</div>
+                    <textarea type="text" placeholder={userInfo.title ? userInfo.title : 'Patient Math Tutor with 5+ years of experience'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="title"/>
+                </div>
+
+                <div className="flex items-center flex-col p-2 w-full">
+                    <div className="text-lg text-center">Education:</div>
+                    <textarea type="text" placeholder={userInfo.education ? userInfo.education : 'Enter Education'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="education"/>
+                </div>
+                
                 <div className="flex justify-between flex-col p-2 w-9/12">
                     <div className="text-lg text-center">Bio:</div>
                     <textarea type="text" placeholder={userInfo.bio === 'default' ?
