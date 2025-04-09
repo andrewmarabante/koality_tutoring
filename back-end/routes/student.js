@@ -23,6 +23,9 @@ router.post('/createPaymentMethod', auth.verifyStudentToken, studentController.c
 
 router.get('/getTutors', auth.verifyStudentToken, studentController.getTutors)
 
+router.post('/newRequest', auth.verifyStudentToken, studentController.newRequest)
+
+
 
 //last thing i was doing was trying to set up this route
 

@@ -13,6 +13,9 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
 
     const [showReviews, setShowReviews] = useState(false)
     const [showMessage, setShowMessage] = useState(false)
+    const [messageAlert, setMessageAlert] = useState('')
+    
+    const server = import.meta.env.VITE_SERVER + 'student'
 
     function toggleReviews(){
         if(showReviews){
@@ -20,6 +23,41 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
         }else{
             setShowReviews(true)
         }
+    }
+
+    function handleSubmit(e){
+        e.preventDefault()
+
+        if(e.target.message.value.length <= 75){
+            setMessageAlert('Message must be at least 75 characters')
+            return 
+        }
+
+        const data = {
+            message: e.target.message.value,
+            type: e.target.lessonType.value,
+            frequency: e.target.frequency.value,
+            tutorId: tutor._id
+        }
+
+        console.log(data)
+
+        fetch(server + '/newRequest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            credentials: 'include'
+          })
+          .then(result  => result.json())
+          .then(data => {
+            console.log(data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+        
+
     }
 
     return(
@@ -74,10 +112,11 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
                                 <div onClick={() => setShowMessage(false)}>Go Back</div>
                             </div>
                         </div>
-                        <div className='grow flex flex-col p-5 py-2'>
+                        <form className='grow flex flex-col p-5 py-2' onSubmit={handleSubmit}>
                             <div className='p-2 text-xl font-roboto-title'>Message:</div>
                             <textarea className='border border-gray-300 rounded-2xl w-full h-1/3 p-3' name="message" placeholder={`Create a Message for ${tutor.first_name}! Be sure to add your name and some details about your situation and possible availability. `}></textarea>
-                            
+                            {messageAlert && <div className='w-full text-center text-xs p-1 text-red-300'>{messageAlert}</div>}
+
                             <div className='flex my-3'>
                                 <div className='p-2 text-xl font-roboto-title-italic'>Lesson Type:</div>
                                 <select name="lessonType" id="" className='px-2'>
@@ -85,8 +124,18 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
                                     <option value="online">Online</option>
                                 </select>
                             </div>
-                            <Button>Send Request</Button>
-                        </div>
+                            <div className='flex my-3'>
+                                <div className='p-2 text-xl font-roboto-title-italic'>Frequency:</div>
+                                <select name="frequency" id="" className='px-2 text-xs'>
+                                    <option value="1">1 Lesson</option>
+                                    <option value="2-3">2 or 3 Lessons</option>
+                                    <option value="weekly">Once a Week</option>
+                                    <option value="biweekly">Twice a Week</option>
+                                    <option value="alot">More than twice a Week</option>
+                                </select>
+                            </div>
+                            <Button type='submit'>Send Request</Button>
+                        </form>  
                 </motion.div>
                     <div className='flex justify-between items-center px-5'>
                         <div className='flex items-center text-sm py-2'>

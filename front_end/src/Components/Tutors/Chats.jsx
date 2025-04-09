@@ -11,7 +11,8 @@ export default function Chats(){
 
     const [create, setCreate] = useState(false)
     const [recipients, setRecipients] = useState(false)
-
+    const [chats, setChats] = useState(null)
+    const [currentUser, setCurrentUser] = useState(null)
 
     useEffect(() => {
 
@@ -57,6 +58,11 @@ export default function Chats(){
                     <div className="flex flex-col justify-start items-center w-full">
                         <div className="text-2xl p-5 ">Messages</div>
                         <div className="w-full justify-start px-5"><div className="font-roboto-title border-b w-fit">Inbox</div></div>
+                        {chats && chats.map(chat => {                           
+                            return(
+                                <div>something</div>
+                            )
+                        })}
                         <div className="bg-blue-100 rounded-4xl absolute bottom-5 right-5">
                             <IconButton onClick={() => setTimeout(() => setCreate(true), 175)} color="primary" aria-label="add to shopping cart" size="large" style={{height: '65px', width:'65px'}}>
                                 <MapsUgcIcon fontSize="inherit" style={{height: '40px', width:'40px'}}/>

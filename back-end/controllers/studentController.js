@@ -1,6 +1,8 @@
 const Tutor = require('../models/tutor');
 const Student = require('../models/student');
+const Request = require('../models/request');
 const Schedule = require('../models/schedule');
+const Chat = require('../models/chat');
 const Message = require('../models/message');
 const auth = require('../auth')
 const stripe = require("stripe")(process.env.stripeSecret)
@@ -238,6 +240,58 @@ function getTutors(req,res){
     .catch(err => res.status(500).json(err))
 }
 
+function newRequest(req,res){
+
+    const userId = req.userInfo.userId
+
+    const requestData = {
+        ...req.body,
+        studentId: userId,
+        accepted: false,
+    }
+
+    const newRequest = new Request(requestData)
+
+    newRequest.save()
+    .then(async () => {
+
+        const [tutor, student] = await Promise.all([
+            Tutor.findById(requestData.tutorId).select('_id first_name last_name photo'),
+            Student.findById(requestData.studentId).select('_id first_name last_name photo')
+          ]);
+
+        const chatData = {
+            users: [tutor, student],
+            name: 'default',
+        }
+
+        const newChat = new Chat(chatData)
+
+        newChat.save()
+        .then((result) => {
+
+            const chatId = result._id.toString();
+
+            const messageData = {
+                senderId: userId,
+                chatId: chatId,
+                body: requestData.message,
+            }
+
+            const newMessage = new Message(messageData)
+
+            newMessage.save()
+            .then(() => {
+                res.status(200).json('success')
+            })
+            .catch(err => res.status(500).json(err))
+        })
+        .catch(err => res.status(500).json(err))
+
+    })
+    .catch(err => res.status(500).json(err))
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -245,5 +299,6 @@ module.exports = {
     initiateEmailVerification,
     verifyEmail,
     createPaymentMethod,
-    getTutors
+    getTutors,
+    newRequest,
 }

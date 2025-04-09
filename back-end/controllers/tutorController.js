@@ -1,6 +1,7 @@
 const Tutor = require('../models/tutor');
 const Schedule = require('../models/schedule');
 const Message = require('../models/message');
+const Chat = require('../models/chat');
 const auth = require('../auth')
 
 
@@ -147,7 +148,14 @@ function createMessage(req,res){
 }
 
 function getChats(req,res){
-    res.json('chats')
+
+    const userId = req.userInfo.userId
+
+    Chat.find({ 'users._id' : userId })
+    .then(result => {
+        res.status(200).json([result, userId])
+    })
+    .catch(err => res.status(500).json(err))
 }
 
 function getStudents(req,res){

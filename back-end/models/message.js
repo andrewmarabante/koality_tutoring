@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
 
-    sender_id : {
+    senderId : {
         type : String,
         required : true
     },
-    chat_id : {
+    chatId : {
         type : String,
         required : true,
         index: true,
@@ -18,7 +18,6 @@ const messageSchema = new Schema({
     },
     read : {
         type : Boolean,
-        required : true
     },
     images : {
         type : Array,
