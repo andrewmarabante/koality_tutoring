@@ -8,10 +8,14 @@ const chatSchema = new Schema({
           type: mongoose.Schema.Types.ObjectId,
           required: true,
         },
-        name: {
+        first_name: {
           type: String,
           required: true,
         },
+        last_name: {
+            type: String,
+            required: true,
+          },
         photo: {
           type: String, 
         }
@@ -20,7 +24,16 @@ const chatSchema = new Schema({
     name: {
       type: String,
       required: true,
-    }
+    },
+    last_message: {
+        type: String,
+        required: true,
+    },
+    last_message_date: {
+        type: Date,
+        required: true,
+    },
+
   }, { timestamps: true });
   
 

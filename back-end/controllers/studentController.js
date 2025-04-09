@@ -263,6 +263,8 @@ function newRequest(req,res){
         const chatData = {
             users: [tutor, student],
             name: 'default',
+            last_message: requestData.message,
+            last_message_date: new Date()
         }
 
         const newChat = new Chat(chatData)
