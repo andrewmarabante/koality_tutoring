@@ -38,7 +38,6 @@ export default function StudentProfile(){
 
     useEffect(() => {
 
-        console.log('sent')
         fetch( server + '/profile',{
             method: 'GET',
             headers: {
@@ -50,7 +49,6 @@ export default function StudentProfile(){
         })
         .then(result => result.json())
         .then(data => {
-            console.log('recieved')
             setUserInfo(data)
         })
         .catch(err => console.log(err))

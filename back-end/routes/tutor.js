@@ -24,6 +24,8 @@ router.post('/createMessage', auth.verifyTutorToken, upload.array('image', 5), t
 
 router.get('/getChats', auth.verifyTutorToken , tutorController.getChats)
 
+router.post('/getMessages', auth.verifyTutorToken , tutorController.getMessages)
+
 router.get('/getStudents', auth.verifyTutorToken , tutorController.getStudents)
 
 router.get('/verifyEmail', tutorController.verifyEmail)

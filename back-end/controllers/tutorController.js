@@ -78,7 +78,6 @@ function updateProfile(req, res){
         Object.entries(newData).filter(([_, value]) => value !== '')
       );
     
-      console.log(cleanedData)
 
     Tutor.findByIdAndUpdate(userId, {$set: cleanedData})
     .then(() => {
@@ -143,8 +142,31 @@ function createSchedule(req,res){
 }
 
 function createMessage(req,res){
-    console.log(req.body)
-    res.json('working')
+    const {body, chatId, senderId} = req.body
+
+    const messageData = {
+        body: body,
+        chatId: chatId,
+        senderId, senderId
+
+    }
+
+    const newMessage = new Message(messageData);
+
+    newMessage.save()
+    .then((messageResult) => {
+
+        Chat.findByIdAndUpdate(messageResult.chatId, {
+            last_message: messageResult.body,
+            last_message_date: messageResult.createdAt
+        }, { runValidators: true, new: true })
+        .then(chatResult => {
+            res.status(200).json({messageResult: messageResult, chatResult: chatResult})
+        })
+
+    })
+    .catch(err => res.status(500).json(err))
+
 }
 
 function getChats(req,res){
@@ -212,6 +234,18 @@ async function verifyEmail(req,res){
 
 }
 
+function getMessages(req,res){
+    const chatId = req.body.chatId
+
+    Message.find({ chatId: chatId})
+    .then(result => {
+        res.status(200).json(result)
+
+    })
+    .catch(err => res.status(500).json(err))
+}
+
+
 module.exports = {
     loadProfile,
     changeProfilePic,
@@ -222,5 +256,6 @@ module.exports = {
     getChats,
     getStudents,
     initiateEmailVerification,
-    verifyEmail
+    verifyEmail,
+    getMessages,
 }

@@ -40,8 +40,6 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
             tutorId: tutor._id
         }
 
-        console.log(data)
-
         fetch(server + '/newRequest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
