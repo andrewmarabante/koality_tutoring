@@ -182,8 +182,13 @@ function getChats(req,res){
 
 function getStudents(req,res){
 
-    //for now we will just pass in a fake student array
-    res.json('students')
+    const userId = req.userInfo.userId
+
+    Tutor.find({_id: userId})
+    .then(result => {
+        const students = result[0].students;
+        res.status(200).json(students)    
+    })
 
 }
 

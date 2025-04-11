@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import backArrow from '/assets/backArrow.svg'
+import backArrow from '/assets/whiteBackArrow.svg'
 import send from '/assets/send.svg'
 import { CircularProgress } from "@mui/material";
 import { AnimatePresence, motion } from 'framer-motion';
@@ -164,11 +164,11 @@ export default function OpenChat({chatInfo, closeChat, currentUser, updateChatLa
     return(
         <div className="h-full relative flex justify-center p-10 w-full font-roboto">
             <div className="bg-white rounded-2xl h-full w-full md:w-3/4 md:pt-3 lg:w-1/2 xl:w-1/3 flex justify-start relative overflow-auto flex-col items-center">
-                <div className='flex items-center p-1 py-3 justify-start w-full bg-gray-800'>
+                <div className='flex items-center p-1 py-3 justify-start w-full bg-gray-600'>
                     <img src={backArrow } alt="" className='h-8' onClick={handleClose}/>
                     <div className='flex gap-2 items-end'>
                         <img src={otherUsers && otherUsers.length === 1 && otherUsers[0].photo} alt="" className='h-8 rounded-full'/>
-                        <div className='text-xl font-roboto-title text-white'>{otherUsers && otherUsers.length === 1 && otherUsers[0].first_name + ' ' + otherUsers[0].last_name}</div>
+                        <div className='text-xl font-roboto-title text-white'>{otherUsers && otherUsers.length === 1 && otherUsers[0].first_name + ' ' + otherUsers[0].last_name.slice(0,1)+'.'}</div>
                     </div>
                 </div>
                 {messages ? 
@@ -261,7 +261,7 @@ export default function OpenChat({chatInfo, closeChat, currentUser, updateChatLa
                     <CircularProgress size={50}/>
                 </div>
                 }
-                <div className='w-full px-5 py-2 flex bg-gray-800 gap-2 border-t border-gray-300'>
+                <div className='w-full px-5 py-2 flex bg-gray-600 gap-2 border-t border-gray-300'>
                     <textarea
                         ref={textRef}
                         onInput={handleInput}

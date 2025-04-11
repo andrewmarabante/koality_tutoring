@@ -5,13 +5,13 @@ import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import plus from '/assets/plus.svg';
 import OpenChat from "./OpenChat";
 import { v4 } from "uuid";
+import NewChat from "./NewChat";
 
 export default function Chats(){
 
     const server = import.meta.env.VITE_SERVER + 'tutor'
 
     const [create, setCreate] = useState(false)
-    const [recipients, setRecipients] = useState(false)
     const [chats, setChats] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
     const [viewChat, setViewChat] = useState(false)
@@ -37,19 +37,6 @@ export default function Chats(){
                 .catch(err => console.log(err))
 
             
-            fetch( server +'/getStudents' , {
-                    method: 'GET',
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Headers': '*',
-                    },
-                    credentials: 'include'
-                })
-                    .then((result) => result.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-                    .catch(err => console.log(err))
     }, [])
 
 
@@ -129,7 +116,7 @@ export default function Chats(){
                                         <img src={otherUsers.length === 1 && otherUsers[0].photo} alt="" className="h-12 rounded-full"/>
                                         <div className="w-full">
                                             <div className="flex w-full justify-between">
-                                                <div className="font-roboto text-sm ">{otherUsers.length === 1 && otherUsers[0].first_name + ' ' + otherUsers[0].last_name}</div>
+                                                <div className="font-roboto text-sm ">{otherUsers.length === 1 && otherUsers[0].first_name + ' ' + otherUsers[0].last_name.slice(0,1)+'.'}</div>
                                                 <div className="h-full flex flex-col justify-start w-fit text-xs pt-1">{formattedDate}</div>
                                             </div>
                                             <div className="text-xs font-roboto text-gray-500 w-full text-wrap">{lastMessage}</div>
@@ -144,20 +131,7 @@ export default function Chats(){
                             </IconButton>
                         </div>
                     </div>
-                    :<div className="font-roboto-title text-lg w-full p-2"> 
-                        <div className="flex justify-start w-full items-center">
-                            <IconButton onClick={() => setTimeout(() => setCreate(false), 175)} color="primary" aria-label="add to shopping cart" size="small">
-                                <img src={backArrow} alt="back" className="h-7"/>
-                            </IconButton>
-                            <div className="text-nowrap">New Conversation:</div>
-                        </div>
-                        <div className="border-gray-300 border-b flex justify-between">
-                            <div className="font-roboto-title-italic p-2">Select Recipients</div>
-                            <IconButton onClick={() => setTimeout(() => setRecipients(true), 175)} color="primary" aria-label="add to shopping cart" size="small">
-                                <img src={plus} alt="plus" className="h-7"/>
-                            </IconButton>
-                        </div>
-                        </div>
+                    : <NewChat setCreate={setCreate} currentUser={currentUser}/>
                     }
 
                     

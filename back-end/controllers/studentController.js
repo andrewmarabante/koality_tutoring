@@ -260,6 +260,8 @@ function newRequest(req,res){
             Student.findById(requestData.studentId).select('_id first_name last_name photo')
           ]);
 
+        await Tutor.findByIdAndUpdate(requestData.tutorId, {$push: {students: student}}, {runValidators: true})
+
         const chatData = {
             users: [tutor, student],
             name: 'default',
@@ -284,6 +286,7 @@ function newRequest(req,res){
 
             newMessage.save()
             .then(() => {
+
                 res.status(200).json('success')
             })
             .catch(err => res.status(500).json(err))
