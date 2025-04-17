@@ -221,7 +221,9 @@ export default function Profile(){
                 <div className={`flex items-center justify-center`}>
                     <button className="text-lg p-2 rounded-lg px-5 border-gray-300 border" type="submit">Update</button>
                     {loading && <CircularProgress size={40} className="ml-2"/>}
-                    {!loading && posted && <AnimatedCheckmark />}
+                    {!loading && posted && <div className="h-8">
+                        <AnimatedCheckmark />
+                    </div>}
                 </div>
                 {message && <div className="text-red-300 text-xs">{message}</div>}
 

@@ -3,6 +3,8 @@ import Profile from './Profile';
 import TutorNavbar from './TutorNavbar';
 import TutorSchedule from './TutorSchedule';
 import Chats from './Chats';
+import SubmitLesson from './SubmitLesson';
+
 import { useState } from 'react';
 
 export default function TutorHome(){
@@ -29,6 +31,7 @@ export default function TutorHome(){
                 {section === 'Getting Started' && <GettingStarted />}
                 {section === 'Schedule' && <TutorSchedule  />}
                 {section === 'Messages' && <Chats  />}
+                {section === 'Submit Lesson' && <SubmitLesson  />}
 
             </div>
         </div>

@@ -250,6 +250,12 @@ function getMessages(req,res){
     .catch(err => res.status(500).json(err))
 }
 
+function submitLesson(req,res){
+    
+    console.log(req.body)
+
+    res.json('working')
+}
 
 module.exports = {
     loadProfile,
@@ -263,4 +269,5 @@ module.exports = {
     initiateEmailVerification,
     verifyEmail,
     getMessages,
+    submitLesson
 }

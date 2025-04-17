@@ -26,9 +26,12 @@ router.get('/getChats', auth.verifyTutorToken , tutorController.getChats)
 
 router.post('/getMessages', auth.verifyTutorToken , tutorController.getMessages)
 
+router.post('/submitLesson', auth.verifyTutorToken , tutorController.submitLesson)
+
 router.get('/getStudents', auth.verifyTutorToken , tutorController.getStudents)
 
 router.get('/verifyEmail', tutorController.verifyEmail)
+
 
 
 
