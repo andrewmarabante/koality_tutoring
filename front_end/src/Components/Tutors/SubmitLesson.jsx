@@ -69,6 +69,7 @@ export default function SubmitLesson() {
         })
             .then((result) => result.json())
             .then(data => {
+                console.log(data)
                 setTutor(data)
             })
             .catch(err => console.log(err))
@@ -98,8 +99,10 @@ export default function SubmitLesson() {
             duration: totalMinutes,
             rate: rate,
             subject: subjectRef.current,
-            lessonType: lessonTypeRef.current,
-            tutorConfirmed: checkRef.current
+            lessonType: lessonTypeRef.current ? lessonTypeRef.current : 'In-person',
+            tutorConfirmed: checkRef.current,
+            tutorName: tutor.firstName + ' ' + tutor.lastName,
+            studentName: currentStudent.first_name + ' ' + currentStudent.last_name,
         }
 
         fetch(server + '/submitLesson', {

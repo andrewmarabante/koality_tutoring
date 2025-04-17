@@ -1,6 +1,7 @@
 const Tutor = require('../models/tutor');
 const Schedule = require('../models/schedule');
 const Message = require('../models/message');
+const Lesson = require('../models/lesson');
 const Chat = require('../models/chat');
 const auth = require('../auth')
 
@@ -251,10 +252,36 @@ function getMessages(req,res){
 }
 
 function submitLesson(req,res){
-    
-    console.log(req.body)
 
-    res.json('working')
+    const tutorId = req.userInfo.userId;
+    
+    const {studentId, duration, rate, subject, lessonType, tutorConfirmed, tutorName, studentName} = req.body
+   
+    const lessonData = {
+        tutor_id: tutorId,
+        student_id: studentId,
+        tutor_name: tutorName,
+        student_name: studentName,
+        subject: subject,
+        duration: duration,
+        rate: rate,
+        lesson_type: lessonType,
+        tutor_confirmed: true,
+        student_confirmed: false,
+        student_paid: false,
+        tutor_paid: false,
+        student_denied: false
+    }
+    
+    const newLesson = new Lesson(lessonData)
+
+    newLesson.save()
+    .then(() => {
+        res.json('saved')
+    })
+    .catch(err => res.json(err))
+
+
 }
 
 module.exports = {

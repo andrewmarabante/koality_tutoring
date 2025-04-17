@@ -13,6 +13,16 @@ const lessonSchema = new Schema({
         required: true,
         index: true,
     },
+    tutor_name: {
+        type: String,
+        required: true,
+        index: true,
+    },
+    student_name: {
+        type: String,
+        required: true,
+        index: true,
+    },
     subject: {
         type: String,
         required: true,
@@ -29,6 +39,10 @@ const lessonSchema = new Schema({
         type: Number,
         required: true
     },
+    lesson_type: {
+        type: String,
+        required: true,
+    },
     tutor_confirmed: {
         type: Boolean,
         required: true
@@ -42,6 +56,10 @@ const lessonSchema = new Schema({
         required: true
     },
     tutor_paid: {
+        type: Boolean,
+        required: true
+    },
+    student_denied: {
         type: Boolean,
         required: true
     },
