@@ -2,6 +2,7 @@ import { useState } from 'react';
 import StudentNavbar from './StudentNavbar';
 import StudentProfile from './StudentProfile';
 import FindTutor from './FindTutor';
+import Study from './Study';
 
 export default function StudentHome(){
 
@@ -25,6 +26,7 @@ export default function StudentHome(){
             <div className='grow z-50 flex justify-center items-center overflow-hidden w-screen relative'>
                 {section === 'Profile' && <StudentProfile />}
                 {section === 'Find Tutor' && <FindTutor />}
+                {section === 'Study' && <Study />}
             </div>
         </div>
     )

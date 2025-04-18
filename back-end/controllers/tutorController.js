@@ -284,6 +284,18 @@ function submitLesson(req,res){
 
 }
 
+function getLessons(req,res){
+
+    const userId = req.userInfo.userId
+
+    Lesson.find({tutor_id : userId})
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => res.status(500).json(err))
+
+}
+
 module.exports = {
     loadProfile,
     changeProfilePic,
@@ -296,5 +308,6 @@ module.exports = {
     initiateEmailVerification,
     verifyEmail,
     getMessages,
-    submitLesson
+    submitLesson,
+    getLessons,
 }

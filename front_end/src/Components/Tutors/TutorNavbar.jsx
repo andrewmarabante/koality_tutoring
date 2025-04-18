@@ -14,7 +14,7 @@ import Bug from '/assets/bug.svg'
 import Message from '/assets/message.svg'
 import People from '/assets/people.svg'
 import Money from '/assets/money.svg'
-import Question from '/assets/question.svg'
+import Clipboard from '/assets/clipboard.svg'
 import Profile from '/assets/profile.svg'
 import Login from '/assets/login.svg'
 import Stars from '/assets/stars.svg'
@@ -69,7 +69,7 @@ export default function TutorNavbar({section, changeSection}) {
       </List>
       <Divider />
       <List>
-        {['Submit Lesson', 'Logout'].map((text, index) => (
+        {['Submit Lesson', 'Lesson History', 'Logout'].map((text, index) => (
           <ListItem key={text} disablePadding onClick={()=>{changeSection(text)}}>
             <ListItemButton>
               <ListItemIcon sx={{maxWidth: '10px'}}>
@@ -77,6 +77,8 @@ export default function TutorNavbar({section, changeSection}) {
                 {text === 'Join The Community' && <img src={Stars} alt="Stars" className='h-4 sm:h-5 lg:h-7 xl:h-7'/>}
                 {text === 'Logout' && <img src={Login} alt="Logout" className='h-4 sm:h-5 lg:h-7 xl:h-7'/>}
                 {text === 'Submit Lesson' && <img src={Money} alt="Money" className='h-4 sm:h-5 lg:h-7 xl:h-7'/>}
+                {text === 'Lesson History' && <img src={Clipboard} alt="Clipboard" className='h-4 sm:h-5 lg:h-7 xl:h-7'/>}
+
               </ListItemIcon>
               <ListItemText primary={
                 <Typography

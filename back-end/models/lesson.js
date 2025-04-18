@@ -63,6 +63,9 @@ const lessonSchema = new Schema({
         type: Boolean,
         required: true
     },
+    rating: {
+        type: Number,
+    },
 
 }, { timestamps: true })
 

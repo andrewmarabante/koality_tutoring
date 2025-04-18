@@ -18,6 +18,8 @@ router.post('/updateProfile', auth.verifyTutorToken, tutorController.updateProfi
 
 router.get('/getSchedule', auth.verifyTutorToken, tutorController.getSchedule)
 
+router.get('/getLessons', auth.verifyTutorToken, tutorController.getLessons)
+
 router.post('/createSchedule', auth.verifyTutorToken, tutorController.createSchedule)
 
 router.post('/createMessage', auth.verifyTutorToken, upload.array('image', 5), tutorController.createMessage)

@@ -4,6 +4,7 @@ import TutorNavbar from './TutorNavbar';
 import TutorSchedule from './TutorSchedule';
 import Chats from './Chats';
 import SubmitLesson from './SubmitLesson';
+import LessonHistory from './LessonHistory';
 
 import { useState } from 'react';
 
@@ -32,6 +33,7 @@ export default function TutorHome(){
                 {section === 'Schedule' && <TutorSchedule  />}
                 {section === 'Messages' && <Chats  />}
                 {section === 'Submit Lesson' && <SubmitLesson  />}
+                {section === 'Lesson History' && <LessonHistory  />}
 
             </div>
         </div>
