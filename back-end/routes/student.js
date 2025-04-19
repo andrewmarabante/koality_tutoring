@@ -25,6 +25,13 @@ router.get('/getTutors', auth.verifyStudentToken, studentController.getTutors)
 
 router.post('/newRequest', auth.verifyStudentToken, studentController.newRequest)
 
+router.get('/getChats', auth.verifyStudentToken, studentController.getChats)
+
+router.post('/getMessages', auth.verifyStudentToken, studentController.getMessages)
+
+router.post('/createMessage', auth.verifyStudentToken, upload.array('image', 5), studentController.createMessage)
+
+
 
 
 //last thing i was doing was trying to set up this route

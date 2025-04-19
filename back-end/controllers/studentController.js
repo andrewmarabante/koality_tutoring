@@ -297,6 +297,56 @@ function newRequest(req,res){
     .catch(err => res.status(500).json(err))
 }
 
+function getChats(req,res){
+
+    const userId = req.userInfo.userId
+
+    Chat.find({ 'users._id' : userId })
+    .then(result => {
+        res.status(200).json([result, userId])
+    })
+    .catch(err => res.status(500).json(err))
+}
+
+function getMessages(req,res){
+    const chatId = req.body.chatId
+
+    Message.find({ chatId: chatId})
+    .then(result => {
+        res.status(200).json(result)
+
+    })
+    .catch(err => res.status(500).json(err))
+}
+
+function createMessage(req,res){
+    const {body, chatId, senderId} = req.body
+
+    const messageData = {
+        body: body,
+        chatId: chatId,
+        senderId, senderId
+
+    }
+
+    const newMessage = new Message(messageData);
+
+    newMessage.save()
+    .then((messageResult) => {
+
+        Chat.findByIdAndUpdate(messageResult.chatId, {
+            last_message: messageResult.body,
+            last_message_date: messageResult.createdAt
+        }, { runValidators: true, new: true })
+        .then(chatResult => {
+            res.status(200).json({messageResult: messageResult, chatResult: chatResult})
+        })
+
+    })
+    .catch(err => res.status(500).json(err))
+
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -306,4 +356,7 @@ module.exports = {
     createPaymentMethod,
     getTutors,
     newRequest,
+    getChats,
+    getMessages,
+    createMessage
 }
