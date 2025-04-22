@@ -4,6 +4,7 @@ import StudentProfile from './StudentProfile';
 import FindTutor from './FindTutor';
 import Study from './Study';
 import Chats from './Chats';
+import PlansPricing from './PlansPricing';
 
 export default function StudentHome(){
 
@@ -29,6 +30,7 @@ export default function StudentHome(){
                 {section === 'Find Tutor' && <FindTutor />}
                 {section === 'Study' && <Study />}
                 {section === 'Messages' && <Chats />}
+                {section === 'Plans / Pricing' && <PlansPricing />}
 
             </div>
         </div>
