@@ -44,36 +44,36 @@ export default function LessonHistory() {
 
     }, [])
 
-    function totalEarnings(){
-       if(!lessons){return <CircularProgress size={15}/>}
-
-       let total = 0;
-        lessons.map(lesson => {
-            total += (lesson.rate * lesson.duration /60)
-        })
-        
-        return total
-    }
-
-    function totalPaid(){
-        if(!lessons){return <CircularProgress size={15}/>}
+    function totalEarnings() {
+        if (!lessons) { return <CircularProgress size={15} /> }
 
         let total = 0;
-
         lessons.map(lesson => {
-            if(lesson.tutor_paid){total += (lesson.rate * lesson.duration /60)}
+            total += (lesson.rate * lesson.duration / 60)
         })
 
         return total
     }
 
-    function totalOwed(){
-        if(!lessons){return <CircularProgress size={15}/>}
+    function totalPaid() {
+        if (!lessons) { return <CircularProgress size={15} /> }
 
         let total = 0;
 
         lessons.map(lesson => {
-            if(!lesson.tutor_paid){total += (lesson.rate * lesson.duration /60)}
+            if (lesson.tutor_paid) { total += (lesson.rate * lesson.duration / 60) }
+        })
+
+        return total
+    }
+
+    function totalOwed() {
+        if (!lessons) { return <CircularProgress size={15} /> }
+
+        let total = 0;
+
+        lessons.map(lesson => {
+            if (!lesson.tutor_paid) { total += (lesson.rate * lesson.duration / 60) }
         })
 
         return total
@@ -93,28 +93,29 @@ export default function LessonHistory() {
                     >
                         <div className="text-2xl p-5 pb-3 text-center mx-5 relative">Lesson History
                             <div className="absolute -right-5 bottom-2 text-xs text-blue-500" onClick={() => {
-                                showDetails ? setShowDetails(false) : setShowDetails(true)}}>{showDetails ? 'Close' : 'Details'}</div>
+                                showDetails ? setShowDetails(false) : setShowDetails(true)
+                            }}>{showDetails ? 'Close' : 'Details'}</div>
                         </div>
                     </motion.div>
                     <AnimatePresence>
-                    {showDetails &&  <motion.div
-                        key='studentSelect'
-                        initial={{ opacity: 0, y: -50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -50 }}
-                        transition={{ duration: .5, ease: "easeOut" }}
-                        className=""
-                    >
-                        <div className="p-2 flex flex-col items-center gap-2">
-                            <div className="w-3/4 flex justify-between">Total Earnings: <span className="font-roboto-title-italic">{'$ '+ totalEarnings()}</span></div>
-                            <div className="w-3/4 flex justify-between">Amount Paid: <span className="font-roboto-title-italic">{'$ '+totalPaid()}</span></div>
-                            <div className="w-3/4 flex justify-between">Amount Owed: <span className="font-roboto-title-italic">{'$ '+totalOwed()}</span></div>
+                        {showDetails && <motion.div
+                            key='studentSelect'
+                            initial={{ opacity: 0, y: -50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -50 }}
+                            transition={{ duration: .5, ease: "easeOut" }}
+                            className=""
+                        >
+                            <div className="p-2 flex flex-col items-center gap-2">
+                                <div className="w-3/4 flex justify-between">Total Earnings: <span className="font-roboto-title-italic">{'$ ' + totalEarnings()}</span></div>
+                                <div className="w-3/4 flex justify-between">Amount Paid: <span className="font-roboto-title-italic">{'$ ' + totalPaid()}</span></div>
+                                <div className="w-3/4 flex justify-between">Amount Owed: <span className="font-roboto-title-italic">{'$ ' + totalOwed()}</span></div>
 
-                        </div>
-                    </motion.div>}
+                            </div>
+                        </motion.div>}
                     </AnimatePresence>
                 </div>
-            
+
 
                 <motion.div
                     key='studentSelect'
@@ -190,18 +191,20 @@ export default function LessonHistory() {
                             </div>
                         </motion.div>
                         }
-                        {lessons && lessons.length === 0 && <motion.div
-                            key='studentSelect'
-                            initial={{ opacity: 0, y: 500 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 20 }}
-                            transition={{ duration: .2, ease: "easeOut" }}
-                            className="overflow-y-auto h-full w-full"
-                        >
-                            <div className="text-sm text-center pt-3">You have no submitted lessons!</div>
-                        </motion.div>}
+                        {lessons && lessons.length === 0 &&
+                            <motion.div
+                                key='studentSelect'
+                                initial={{ opacity: 0, y: 500 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: .2, ease: "easeOut" }}
+                                className="overflow-y-auto h-full w-full"
+                            >
+                                <div className="text-sm text-center pt-3">You have no submitted lessons!</div>
+                            </motion.div>}
                     </div>
                 </motion.div>
+
 
             </div>
         </div>

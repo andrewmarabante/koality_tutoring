@@ -154,7 +154,7 @@ export default function StudentNavbar({ section, changeSection }) {
             }}
             exit={{ opacity: 0, y: 20 }}
             transition={{
-              duration: 1.2,
+              duration: .5,
               ease: "easeOut",
             }}
           />
@@ -172,7 +172,7 @@ export default function StudentNavbar({ section, changeSection }) {
             }}
             exit={{ opacity: 0, y: 20 }}
             transition={{
-              duration: 1,
+              duration: .5,
               ease: "easeOut",
               delay: 1
             }}
