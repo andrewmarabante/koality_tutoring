@@ -47,6 +47,9 @@ const studentSchema = new Schema({
     customerId : {
         type : String,
     },
+    membership : {
+        type : String,
+    },
 
 }, {timestamps: true})
 

@@ -14,7 +14,7 @@ export default function Study() {
                     transition={{
                         type: "spring",
                         stiffness: 500,
-                        damping: 15
+                        damping: 35
                     }}
                     className="flex flex-col justify-center items-center"
                 >

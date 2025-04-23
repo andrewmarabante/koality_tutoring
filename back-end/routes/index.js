@@ -7,5 +7,6 @@ const indexControllers = require('../controllers/indexController.js')
 
 router.post('/login', indexControllers.login)
 
+router.get('/membershipTotal', indexControllers.membershipTotal)
 
 module.exports = router;
