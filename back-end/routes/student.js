@@ -31,6 +31,9 @@ router.post('/getMessages', auth.verifyStudentToken, studentController.getMessag
 
 router.post('/createMessage', auth.verifyStudentToken, upload.array('image', 5), studentController.createMessage)
 
+router.post('/subscribe', auth.verifyStudentToken, studentController.subscribe)
+
+
 
 
 

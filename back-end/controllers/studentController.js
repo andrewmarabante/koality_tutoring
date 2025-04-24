@@ -38,7 +38,8 @@ function loadProfile(req,res){
             emailVerified: user.emailVerified,
             stripeVerified: user.stripeVerified,
             photo: user.photo,
-            paymentMethods: paymentMethods
+            paymentMethods: paymentMethods,
+            membership: user.membership
         }
 
         res.status(200).json(userInfo)
@@ -347,6 +348,29 @@ function createMessage(req,res){
 
 }
 
+function subscribe(req,res){
+    const userId = req.userInfo.userId;
+    const membershipType = req.body.membership
+
+    Student.find({_id : userId})
+    .then(result => {
+        if(!result[0].customerId){
+            return res.status(200).json('No Payment Method')
+        }else{
+            Student.findByIdAndUpdate(
+                userId,                         
+                { membership: membershipType }, 
+                { new: true } 
+            )
+            .then((result) => {
+                res.status(200).json(result)
+            })
+        }
+    })
+    .catch(err => res.status(500).json(err))
+
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -358,5 +382,6 @@ module.exports = {
     newRequest,
     getChats,
     getMessages,
-    createMessage
+    createMessage,
+    subscribe
 }

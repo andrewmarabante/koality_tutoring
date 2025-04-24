@@ -156,8 +156,10 @@ function studentLogin(req,res){
 
 async function membershipTotal(req,res){
 
-    const count = await Student.countDocuments({ membership: { $ne: null } })
-    res.json(count)
+    const count = await Student.countDocuments({
+        membership: { $ne: null, $ne: "" }
+      });
+      res.json(count)
 }
 
 module.exports = {
