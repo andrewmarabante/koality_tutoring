@@ -26,7 +26,7 @@ export default function StudentHome(){
             <div className='absolute h-5 w-full bg-gradient-to-b from-black to-transparent z-20 opacity-15'></div>
             <div className="absolute top-0 left-0 h-screen w-screen bg-[url('/assets/blueSkyVerticalBackground.svg')] lg:bg-[url('/assets/blueSkyHorizontalBackground.svg')] bg-cover z-0"></div>
             <div className='grow z-50 flex justify-center items-center overflow-hidden w-screen relative'>
-                {section === 'Profile' && <StudentProfile />}
+                {section === 'Profile' && <StudentProfile setSection={setSection} />}
                 {section === 'Find Tutor' && <FindTutor />}
                 {section === 'Study' && <Study />}
                 {section === 'Messages' && <Chats />}

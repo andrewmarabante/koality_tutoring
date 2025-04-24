@@ -256,7 +256,7 @@ export default function PlansPricing() {
                                         and I will be charged once scheduled.
                                     </div>
                                 </div>
-                                {(currentUser && currentUser.paymentMethods.length > 0 || currentUser.subject === null) ? <div className='py-2 px-5' onClick={()=>submit()}><Button fullWidth variant='outlined'>Subscribe</Button></div>
+                                {(currentUser && currentUser.paymentMethods.length > 0 && currentUser.subject !== null) ? <div className='py-2 px-5' onClick={()=>submit()}><Button fullWidth variant='outlined'>Subscribe</Button></div>
                                 : <div className='p-5 text-center text-red-400 font-roboto-title-italic'>
                                     You must set up a payment method and subject in your profile to subscribe to a plan
                                 </div>}

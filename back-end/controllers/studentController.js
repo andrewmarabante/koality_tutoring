@@ -39,7 +39,8 @@ function loadProfile(req,res){
             stripeVerified: user.stripeVerified,
             photo: user.photo,
             paymentMethods: paymentMethods,
-            membership: user.membership
+            membership: user.membership,
+            subject: user.subject,
         }
 
         res.status(200).json(userInfo)
@@ -61,6 +62,7 @@ function updateProfile(req, res){
       );
     
 
+      console.log(cleanedData)
     Student.findByIdAndUpdate(userId, {$set: cleanedData})
     .then(() => {
         res.status(200).json('updated')
@@ -371,6 +373,17 @@ function subscribe(req,res){
 
 }
 
+function cancelSubscription(req,res){
+
+    const userId = req.userInfo.userId
+
+    Student.findByIdAndUpdate(userId, { membership: '' }, { new: true } )
+    .then(() => {
+        res.status(200).json('success')
+    })
+    .catch(err => res.status(500).json(err))
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -383,5 +396,6 @@ module.exports = {
     getChats,
     getMessages,
     createMessage,
-    subscribe
+    subscribe,
+    cancelSubscription
 }

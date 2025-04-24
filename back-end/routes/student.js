@@ -33,6 +33,7 @@ router.post('/createMessage', auth.verifyStudentToken, upload.array('image', 5),
 
 router.post('/subscribe', auth.verifyStudentToken, studentController.subscribe)
 
+router.post('/cancelSubscription', auth.verifyStudentToken, studentController.cancelSubscription)
 
 
 

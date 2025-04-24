@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import x from '/assets/x.svg'
 import check from '/assets/check.svg'
+import plus from '/assets/plus.svg'
 import editImg from '/assets/edit.svg'
+import up from '/assets/up.svg'
 import EditStudentPhoto from "./EditStudentPhoto"
 import { CircularProgress } from "@mui/material";
 import validator from 'validator';
@@ -16,12 +18,22 @@ import discover from '/assets/CardLogos/discover.svg'
 import mastercard from '/assets/CardLogos/mastercard.svg'
 import defaultCard from '/assets/CardLogos/defaultCard.svg'
 import { v4 } from 'uuid'
+import { AnimatePresence, motion } from 'framer-motion';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import Typography from '@mui/joy/Typography';
+import Box from '@mui/joy/Box';
+import Autocomplete from '@mui/joy/Autocomplete';
+
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
+const subjects = ['Math', 'English', 'Biology',]
 
-export default function StudentProfile() {
+
+export default function StudentProfile({ setSection }) {
 
     const server = import.meta.env.VITE_SERVER + 'student'
+
     const [userInfo, setUserInfo] = useState({})
     const [sent, setSent] = useState(false)
     const [edit, setEdit] = useState(false)
@@ -31,6 +43,9 @@ export default function StudentProfile() {
     const [emailLoad, setEmailLoad] = useState(false)
     const [payment, setPayment] = useState(false)
     const [reset, setReset] = useState(null)
+    const [editMembership, setEditMembership] = useState(false)
+    const [openCancelMembership, setOpenCancelMembership] = useState(false)
+
 
 
     const stripeRef = useRef(null)
@@ -89,6 +104,7 @@ export default function StudentProfile() {
 
         const firstName = e.target.firstName.value
         const lastName = e.target.lastName.value
+        const subject = e.target.subject.value
         const email = e.target.email.value
         let sanitizedEmail
 
@@ -107,12 +123,10 @@ export default function StudentProfile() {
             first_name: firstName,
             last_name: lastName,
             email: email,
+            subject: subject,
         }
 
         setLoading(true)
-
-        console.log(data)
-
 
         fetch(server + '/updateProfile', {
             method: 'POST',
@@ -164,6 +178,25 @@ export default function StudentProfile() {
         }
     }
 
+    function cancelMembership() {
+
+        fetch(server + '/cancelSubscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+            },
+            credentials: 'include'
+        })
+            .then(result => result.json())
+            .then(() => {
+                setUserInfo({ ...userInfo, membership: '' })
+                setEditMembership(false)
+            })
+            .catch(err => console.log(err))
+    }
+
     return (
         <div className="h-11/12 w-9/12">
             <form className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
@@ -197,10 +230,62 @@ export default function StudentProfile() {
                             {!userInfo.emailVerified && <button className="text-xs border-blue-200 border w-fit rounded-lg py-1 px-2" type="button" onClick={handleEmailSend}>{!sent ? 'Send Link' : <div className="w-10">{emailLoad ? <CircularProgress size={10} /> : 'Resend'}</div>}</button>}
                         </div>
                     </div>
+
+                    <div className="flex justify-between flex-col p-2 w-full items-center">
+                        <div className="text-lg text-center">Subject:</div>
+                        <Autocomplete
+                            placeholder={userInfo.subject ? userInfo.subject : 'Choose Subject'}
+                            options={subjects}
+                            name="subject"
+                            sx={{
+                                width: '60%',
+                                backgroundColor: 'transparent',
+                                '& .MuiInputBase-root': {
+                                    fontFamily: 'roboto, sans-serif',
+                                },
+                                '& .MuiAutocomplete-input': {
+                                    fontFamily: 'roboto, sans-serif',
+                                },
+                                boxShadow: 'none',
+                            }}
+                        />
+                    </div>
+
                     <div className="flex justify-between flex-col p-2">
                         <div className="text-lg text-center">Membership:</div>
-                        <input type="text" placeholder={userInfo.membership ? userInfo.membership : 'None'} className="text-center border-gray-300 border rounded-lg p-1"/>
+                        <div className="relative">
+                            <input type="text"
+                                placeholder={
+                                    userInfo.membership === 'good' ? 'The Good Koala' :
+                                        userInfo.membership === 'great' ? 'The Great Koala' :
+                                            userInfo.membership === 'reg' ? 'Regular Koala' :
+                                                userInfo.membership === 'koala' ? 'KoALa' :
+                                                    'None'
+                                }
+                                className="text-center border-gray-300 border rounded-lg p-1 select-none"
+                                readOnly
+                            />
+                            <img src={userInfo && (userInfo.membership === '' || userInfo.membership === null) ? plus : !editMembership ? editImg : up} alt="edit" className="h-5 absolute -right-6 top-2" onClick={() => { userInfo && (userInfo.membership === '' || userInfo.membership === null) ? setSection('Plans / Pricing') : editMembership ? setEditMembership(false) : setEditMembership(true) }} />
+                        </div>
                     </div>
+
+                    <AnimatePresence>
+                        {editMembership && <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: .75, ease: "easeOut" }}
+                        >
+                            <div className="text-red-400 font-roboto-title-italic text-xs" onClick={() => setOpenCancelMembership(true)}>Cancel Membership</div>
+                        </motion.div>}
+                    </AnimatePresence>
+
+                    {userInfo.membership &&
+                        <div>
+
+                        </div>}
+
+
                     <div className="flex justify-betwee items-center flex-col p-2 w-full">
                         <div className="text-lg text-center">Payment Method:</div>
                         <div className="text-center border-gray-300 border rounded-lg p-1 w-9/12 relative" name="lastName">{userInfo.paymentMethods && userInfo.paymentMethods.length > 0 ?
@@ -255,6 +340,54 @@ export default function StudentProfile() {
                 }
 
             </form>
+
+            <Modal open={openCancelMembership} onClose={() => setOpenCancelMembership(false)}>
+                <ModalDialog
+                    aria-labelledby="nested-modal-title"
+                    aria-describedby="nested-modal-description"
+                    sx={(theme) => ({
+                        [theme.breakpoints.only('xs')]: {
+                            top: 'unset',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            borderRadius: 0,
+                            transform: 'none',
+                            maxWidth: 'unset',
+                        },
+                    })}
+                >
+                    <Typography id="nested-modal-title" level="h2">
+                        Are you absolutely sure?
+                    </Typography>
+                    <Typography id="nested-modal-description" textColor="text.tertiary">
+                        This action cannot be undone. This will permanently delete your subscription. If
+                        you have a limited subscription and it is no longer available, you will lose it forever!
+                    </Typography>
+                    <Box
+                        sx={{
+                            mt: 1,
+                            display: 'flex',
+                            gap: 1,
+                            flexDirection: { xs: 'column', sm: 'row-reverse' },
+                        }}
+                    >
+                        <Button variant="solid" color="primary" onClick={() => {
+                            cancelMembership()
+                            setOpenCancelMembership(false)
+                        }}>
+                            Continue
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="neutral"
+                            onClick={() => setOpenCancelMembership(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </Box>
+                </ModalDialog>
+            </Modal>
         </div>
     )
 }
