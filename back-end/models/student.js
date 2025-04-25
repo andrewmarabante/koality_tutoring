@@ -44,6 +44,9 @@ const studentSchema = new Schema({
     frequency : {
         type : String,
     },
+    membershipFrequency : {
+        type : String,
+    },
     customerId : {
         type : String,
     },

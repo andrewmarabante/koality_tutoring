@@ -41,6 +41,9 @@ function loadProfile(req,res){
             paymentMethods: paymentMethods,
             membership: user.membership,
             subject: user.subject,
+            age: user.age,
+            availability: user.availability,
+            membershipFrequency: user.membershipFrequency,
         }
 
         res.status(200).json(userInfo)
@@ -61,8 +64,6 @@ function updateProfile(req, res){
         Object.entries(newData).filter(([_, value]) => value !== '')
       );
     
-
-      console.log(cleanedData)
     Student.findByIdAndUpdate(userId, {$set: cleanedData})
     .then(() => {
         res.status(200).json('updated')
@@ -384,6 +385,18 @@ function cancelSubscription(req,res){
     .catch(err => res.status(500).json(err))
 }
 
+function updateAvailability(req,res){
+
+    const userId = req.userInfo.userId
+    const availability = req.body.availability
+
+    Student.findByIdAndUpdate(userId, {availability: availability}, {new:true})
+    .then((result) => {
+        res.status(200).json(result)
+    })
+    .catch(err => res.status(500).json(err))
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -397,5 +410,6 @@ module.exports = {
     getMessages,
     createMessage,
     subscribe,
-    cancelSubscription
+    cancelSubscription,
+    updateAvailability
 }

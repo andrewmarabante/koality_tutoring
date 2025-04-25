@@ -35,6 +35,9 @@ router.post('/subscribe', auth.verifyStudentToken, studentController.subscribe)
 
 router.post('/cancelSubscription', auth.verifyStudentToken, studentController.cancelSubscription)
 
+router.post('/updateAvailability', auth.verifyStudentToken, studentController.updateAvailability)
+
+
 
 
 
