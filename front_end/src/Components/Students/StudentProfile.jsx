@@ -289,7 +289,7 @@ export default function StudentProfile({ setSection }) {
                             </motion.div>}
                         </AnimatePresence>
                         {userInfo.membership &&
-                            <div className="border border-gray-300 rounded-2xl w-11/12 py-2">
+                            <div className={`border ${(!userInfo.age || !userInfo.membershipFrequency || !userInfo.availability) ? 'border-red-300' : 'border-green-400' } rounded-2xl w-11/12 py-2`}>
                                 <div className="text-lg text-center">Membership Zone:</div>
                                 <div className="flex justify-between px-5 items-center py-3">
                                     <div className="text-lg font-roboto">Frequency: </div>

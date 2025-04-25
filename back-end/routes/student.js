@@ -27,7 +27,11 @@ router.post('/newRequest', auth.verifyStudentToken, studentController.newRequest
 
 router.get('/getChats', auth.verifyStudentToken, studentController.getChats)
 
+router.get('/getLessons', auth.verifyStudentToken, studentController.getLessons)
+
 router.post('/getMessages', auth.verifyStudentToken, studentController.getMessages)
+
+router.post('/confirmLesson', auth.verifyStudentToken, studentController.confirmLesson)
 
 router.post('/createMessage', auth.verifyStudentToken, upload.array('image', 5), studentController.createMessage)
 

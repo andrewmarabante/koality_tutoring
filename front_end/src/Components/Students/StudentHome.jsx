@@ -5,6 +5,8 @@ import FindTutor from './FindTutor';
 import Study from './Study';
 import Chats from './Chats';
 import PlansPricing from './PlansPricing';
+import LessonHistory from './LessonHistory';
+import ReportABug from './ReportABug';
 
 export default function StudentHome(){
 
@@ -31,7 +33,8 @@ export default function StudentHome(){
                 {section === 'Study' && <Study />}
                 {section === 'Messages' && <Chats />}
                 {section === 'Plans / Pricing' && <PlansPricing />}
-
+                {section === 'Lesson History' && <LessonHistory />}
+                {section === 'Report a Bug' && <ReportABug />}
             </div>
         </div>
     )

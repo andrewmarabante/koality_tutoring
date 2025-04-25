@@ -17,6 +17,7 @@ import Money from '/assets/money.svg'
 import Question from '/assets/question.svg'
 import Profile from '/assets/profile.svg'
 import Login from '/assets/login.svg'
+import Clipboard from '/assets/clipboard.svg'
 import Stars from '/assets/stars.svg'
 import { Typography } from '@mui/material';
 import koala from '/assets/koala.svg'
@@ -72,11 +73,11 @@ export default function StudentNavbar({ section, changeSection }) {
       </List>
       <Divider />
       <List>
-        {['Plans / Pricing', 'Report a Bug', 'Logout'].map((text, index) => (
+        {['Plans / Pricing', 'Lesson History', 'Report a Bug', 'Logout'].map((text, index) => (
           <ListItem key={text} disablePadding onClick={() => { changeSection(text) }}>
             <ListItemButton>
               <ListItemIcon sx={{ maxWidth: '10px' }}>
-                {text === 'Become a Tutor' && <img src={People} alt="Message" className='h-4 sm:h-5 lg:h-7 xl:h-7' />}
+                {text === 'Lesson History' && <img src={Clipboard} alt="Clipboard" className='h-4 sm:h-5 lg:h-7 xl:h-7' />}
                 {text === 'Report a Bug' && <img src={Bug} alt="Bug" className='h-4 sm:h-5 lg:h-7 xl:h-7' />}
                 {text === 'Logout' && <img src={Login} alt="Logout" className='h-4 sm:h-5 lg:h-7 xl:h-7' />}
                 {text === 'Plans / Pricing' && <img src={Money} alt="Money" className='h-4 sm:h-5 lg:h-7 xl:h-7' />}

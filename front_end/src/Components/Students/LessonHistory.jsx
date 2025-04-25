@@ -11,7 +11,7 @@ import TypingText from "../Animations/TypingTest";
 
 export default function LessonHistory() {
 
-    const server = import.meta.env.VITE_SERVER + 'tutor'
+    const server = import.meta.env.VITE_SERVER + 'student'
 
     const [lessons, setLessons] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -36,7 +36,6 @@ export default function LessonHistory() {
                     setLoading(false)
                     setLessons(data.reverse())
                 }, 1000)
-                console.log(data)
             })
             .catch(err => {
                 console.log(err)
@@ -44,28 +43,6 @@ export default function LessonHistory() {
 
     }, [])
 
-    function totalEarnings() {
-        if (!lessons) { return <CircularProgress size={15} /> }
-
-        let total = 0;
-        lessons.map(lesson => {
-            total += (lesson.rate * lesson.duration / 60)
-        })
-
-        return total
-    }
-
-    function totalPaid() {
-        if (!lessons) { return <CircularProgress size={15} /> }
-
-        let total = 0;
-
-        lessons.map(lesson => {
-            if (lesson.tutor_paid) { total += (lesson.rate * lesson.duration / 60) }
-        })
-
-        return total
-    }
 
     function totalOwed() {
         if (!lessons) { return <CircularProgress size={15} /> }
@@ -73,10 +50,47 @@ export default function LessonHistory() {
         let total = 0;
 
         lessons.map(lesson => {
-            if (!lesson.tutor_paid) { total += (lesson.rate * lesson.duration / 60) }
+            if (!lesson.student_paid) { total += (lesson.rate * lesson.duration / 60) }
         })
 
         return total
+    }
+
+    function handleSubmit(e, lessonId){
+        e.preventDefault()
+
+        const confirmed = e.target.lessonStatus[0].checked
+        const denied = e.target.lessonStatus[1].checked
+
+        if(!confirmed && !denied){return}
+
+        let status = false
+        if(confirmed){status = true}
+
+        const data = {
+            confirmed: status,
+            lessonId: lessonId
+        }
+
+
+        fetch( server +'/confirmLesson' , {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then((result) => result.json())
+            .then(data => {
+                setLessons(prevLessons =>
+                    prevLessons.map(lesson =>
+                      lesson._id === data._id ? { ...lesson, ...data } : lesson
+                    )
+                  );
+            })
+            .catch(err => console.log(err))
+
+
+
     }
 
     return (
@@ -107,10 +121,7 @@ export default function LessonHistory() {
                             className=""
                         >
                             <div className="p-2 flex flex-col items-center gap-2">
-                                <div className="w-3/4 flex justify-between">Total Earnings: <span className="font-roboto-title-italic">{'$ ' + totalEarnings()}</span></div>
-                                <div className="w-3/4 flex justify-between">Amount Paid: <span className="font-roboto-title-italic">{'$ ' + totalPaid()}</span></div>
                                 <div className="w-3/4 flex justify-between">Amount Owed: <span className="font-roboto-title-italic">{'$ ' + totalOwed()}</span></div>
-
                             </div>
                         </motion.div>}
                     </AnimatePresence>
@@ -140,17 +151,17 @@ export default function LessonHistory() {
                             <div className="overflow-scroll flex flex-col gap-5 w-full">
                                 {lessons.map(lesson => {
 
-                                    const names = lesson.student_name.split(" ")
+                                    const names = lesson.tutor_name.split(" ")
 
                                     const date = new Date(lesson.createdAt)
                                     const formattedDate = date.toLocaleDateString("en-US");
 
 
                                     return (
-                                        <div>
+                                        <div key={v4()}>
                                             <div className="grid grid-cols-4 gap-3 text-center text-xs px-5">
                                                 <div className="flex flex-col gap-1">
-                                                    <div className="">Student:</div>
+                                                    <div className="">Tutor:</div>
                                                     <div>{names[0] + ' ' + names[1].slice(0, 1) + '.'}</div>
                                                 </div>
                                                 <div className="flex flex-col gap-1">
@@ -183,7 +194,23 @@ export default function LessonHistory() {
                                                     <div className="font-roboto-title-italic">{formattedDate}</div>
                                                 </div>
                                             </div>
-                                            <div className={`text-2xl pb-3 text-center border-b ${lesson.tutor_paid ? 'border-green-400' : 'border-gray-400'} mx-5`}></div>
+                                            {(!lesson.student_confirmed && !lesson.student_denied) &&
+                                                <form className="text-xs" onSubmit={(e) => handleSubmit(e, lesson._id)}>
+                                                    <div className="flex justify-center gap-5 py-2 text-sm">
+                                                        <div className="flex gap-1 items-center">
+                                                        <input type="radio" name="lessonStatus" value="confirm" /> 
+                                                            <div>Confirm Lesson</div>
+                                                        </div>
+                                                        <div className="flex gap-1 items-center">
+                                                        <input type="radio" name="lessonStatus" value="dispute" /> 
+                                                            <div>Dispute Lesson</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div className="px-5 py-2"><Button type="submit" color="secondary" fullWidth variant="contained">Submit</Button></div>
+                                                    <div className="text-xs px-3 font-roboto-title-italic text-center">Any Lesson not confirmed or disputed within 5 days will automatically be confirmed.</div>
+                                                </form>}
+                                            <div className={`text-2xl pb-3 text-center border-b ${lesson.student_denied ? 'border-red-400' : lesson.student_confirmed ? 'border-green-400' : 'border-gray-400'} mx-5`}></div>
 
                                         </div>
                                     )

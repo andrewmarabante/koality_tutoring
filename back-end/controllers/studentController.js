@@ -2,6 +2,7 @@ const Tutor = require('../models/tutor');
 const Student = require('../models/student');
 const Request = require('../models/request');
 const Schedule = require('../models/schedule');
+const Lesson = require('../models/lesson');
 const Chat = require('../models/chat');
 const Message = require('../models/message');
 const auth = require('../auth')
@@ -397,6 +398,34 @@ function updateAvailability(req,res){
     .catch(err => res.status(500).json(err))
 }
 
+function getLessons(req,res){
+
+    const userId = req.userInfo.userId
+
+    Lesson.find({student_id : userId})
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => res.status(500).json(err))
+
+}
+
+function confirmLesson(req,res){
+    
+    const userId = req.userInfo.userId
+    const {confirmed, lessonId} = req.body
+
+    Lesson.findByIdAndUpdate(lessonId, {
+        student_confirmed: confirmed === true,
+        student_denied: confirmed === false,
+      }, {new:true})
+      .then(result => {
+        res.status(200).json(result)
+      })
+      .catch(err => res.status(500).json(err))
+
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -411,5 +440,7 @@ module.exports = {
     createMessage,
     subscribe,
     cancelSubscription,
-    updateAvailability
+    updateAvailability,
+    getLessons,
+    confirmLesson
 }
