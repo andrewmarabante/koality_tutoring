@@ -2,6 +2,7 @@ const auth = require('../auth')
 const User = require('../models/user');
 const Tutor = require('../models/tutor');
 const Student = require('../models/student');
+const Report = require('../models/report');
 
 
  function login(req, res){
@@ -162,6 +163,22 @@ async function membershipTotal(req,res){
       res.json(count)
 }
 
+function reportBug(req,res){
+
+    const reportData = req.body
+
+
+    const newReport = new Report(reportData)
+
+    newReport.save()
+    .then(() => {
+        res.status(200).json('saved')
+    })
+    .catch(err => res.status(500).json(err))
+
+
+}
+
 module.exports = {
     login,
     tutorSignup,
@@ -169,4 +186,5 @@ module.exports = {
     tutorLogin,
     studentLogin,
     membershipTotal,
+    reportBug
 }

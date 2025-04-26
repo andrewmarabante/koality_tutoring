@@ -1,16 +1,51 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import cockroach from '/assets/cockroach.svg';
 import policeman from '/assets/policeman.svg';
-import { Button } from "@mui/material"
-
+import { Button, CircularProgress } from "@mui/material"
+import { useState } from 'react';
+import TypingText from '../Animations/TypingTest';
+import AnimatedCheckmark from '../Animations/Checkmark';
 
 
 export default function ReportABug() {
+
+    const [loading, setLoading] = useState(false)
+    const [reportSent, setReportSent] = useState(false)
+
+    const server = import.meta.env.VITE_SERVER
 
 
     function handleSubmit(e) {
         e.preventDefault()
 
+        const title = e.target.title.value
+        const description = e.target.description.value
+
+        if (title === '' || description === '') { return }
+
+        setLoading(true)
+
+        const data = {
+            title: title,
+            description: description
+        }
+
+        console.log(data)
+
+        fetch(server + 'reportBug', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then((result) => result.json())
+            .then(data => {
+                setTimeout(() => {
+                    setLoading(false)
+                    setReportSent(true)
+                }, 1000)
+            })
+            .catch(err => console.log(err))
     }
     return (
         <div className="h-full relative flex justify-center p-10 w-full">
@@ -37,26 +72,51 @@ export default function ReportABug() {
                                     I am accessing this using the safari browser on an iPhone SE 
                                     ' className=" border-gray-300 border rounded-lg p-1 h-32 w-full px-2" name="description" />
                                 </div>
-                                <div className='px-2'><Button color='warning' fullWidth variant='contained'>Exterminate</Button></div>
+                                {!reportSent && <div className='px-2'><Button type='submit' color='warning' fullWidth variant='contained'>{loading ? <CircularProgress size={25}/> : 'Exterminate'}</Button></div>
+                                }
+                                {reportSent &&
+                                    <div className="flex justify-center gap-3 items-center w-full h-fit">
+                                        <TypingText text="Report Sent" speed={100} />
+                                        <div className="h-5">
+                                            <AnimatedCheckmark speed={2.5} />
+                                        </div>
+                                    </div>}
                             </form>
                         </div>
                         <div className='flex px-10'>
-                            <motion.div
-                                initial={{ opacity: 0, x: -500 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: .75, ease: "easeOut", delay: 4 }}
-                            >
-                                <img src={policeman} alt="policeman" className='h-20' />
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0, x: 500 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: 3.5, ease: "easeOut" }}
-                            >
-                                <img src={cockroach} alt="cockroach" className='h-20' />
-                            </motion.div>
+                            <AnimatePresence>
+                                {!reportSent && <div className='flex'>
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -500 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 200, transition: { duration: 1.75, delay: 1.2 } }}
+                                        transition={{ duration: .75, ease: "easeOut", delay: 3 }}
+                                    >
+                                        <img src={policeman} alt="policeman" className='h-20' />
+                                    </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0, x: 500 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 200, transition: { duration: 1.75, delay: .75 } }}
+                                        transition={{ duration: 3, ease: "easeOut" }}
+                                    >
+                                        <img src={cockroach} alt="cockroach" className='h-20' />
+                                    </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -50 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 50, transition: { duration: .5, delay: 0 } }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 500,
+                                            damping: 35,
+                                            delay: 4.5
+                                        }}
+                                    >
+                                        <img src='/assets/busted.jpeg' alt="busted" className='h-7 rotate-12 mx-5' />
+                                    </motion.div>
+                                </div>}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </motion.div>

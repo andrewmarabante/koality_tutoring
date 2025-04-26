@@ -9,4 +9,8 @@ router.post('/login', indexControllers.login)
 
 router.get('/membershipTotal', indexControllers.membershipTotal)
 
+router.post('/reportBug', indexControllers.reportBug)
+
+
+
 module.exports = router;
