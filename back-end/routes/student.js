@@ -21,7 +21,7 @@ router.post('/changeProfilePic', auth.verifyStudentToken, upload.single('image')
 
 router.post('/createPaymentMethod', auth.verifyStudentToken, studentController.createPaymentMethod)
 
-router.get('/getTutors', auth.verifyStudentToken, studentController.getTutors)
+router.get('/getTutors', studentController.getTutors)
 
 router.post('/newRequest', auth.verifyStudentToken, studentController.newRequest)
 

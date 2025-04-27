@@ -39,7 +39,7 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
             frequency: e.target.frequency.value,
             tutorId: tutor._id
         }
-x
+
         fetch(server + '/newRequest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -9,6 +9,7 @@ import BecomeTutor from './BecomeTutor.jsx'
 import Login from "./Login.jsx"
 import Signup from "./Signup.jsx"
 import FindTutor from "./FindTutor.jsx"
+import ReportABug from "./ReportABug.jsx"
 
 
 export default function Home(){
@@ -38,7 +39,8 @@ export default function Home(){
             {section === 'Find Tutor' && <FindTutor setSection={setSection} />}
             {section === 'Schedule' && <ViewSchedule />}
             {section === 'Contact Us' && <ContactUs />}
-            {section === 'Plans and Pricing' && <PlansPricing />}
+            {section === 'Plans and Pricing' && <PlansPricing setSection={setSection}/>}
+            {section === 'Report a Bug' && <ReportABug />}
             {section === 'Become a Tutor' && <BecomeTutor />}
             {section === 'Join The Community' && <Signup changeSection={changeSection} />}
             {section === 'Login' && <Login />}
