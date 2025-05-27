@@ -3,6 +3,8 @@ import SubjectSelector from "./SubjectSelector"
 import ViewTutors from "./ViewTutors"
 import OpenTutorProfile from "./OpenTutorProfile"
 import { CircularProgress } from "@mui/material"
+import { AnimatePresence, motion } from 'framer-motion';
+
 
 
 export default function FindTutor({setSection}){
@@ -56,14 +58,22 @@ export default function FindTutor({setSection}){
         <div className="w-full h-full flex justify-center z-40 items-center">
             <div className="h-11/12 w-11/12 relative">
                 <div className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2">
-                    { !subject && loaded &&
+                <motion.div
+          key='studentSelect'
+          initial={{ opacity: 0, y: -200 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="w-full"
+        >
+            { !subject && loaded &&
                     <div className="w-full h-full flex flex-col justify-start items-center pt-10">
                         <div className="text-2xl p-2">Enter Your Subject: </div>
                         <div className="w-9/12">
                             <SubjectSelector handleSubjectChange = {handleSubjectChange}/>
                         </div>
                     </div>}
-                     {!viewTutor && loaded  && subject &&      <div className="p-1">
+                     {!viewTutor && loaded  && subject &&      <div className="p-1 px-4">
                         Showing All Private Tutors for <span className="font-roboto-title-italic">{subject}</span> <span className="text-blue-500 font-roboto-title-italic text-xs" onClick={() => setTimeout(()=>setSubject(null), 100)}>Change</span>
                     </div>}
                     {!loaded && <div className="w-full pt-10 flex justify-center">
@@ -75,6 +85,10 @@ export default function FindTutor({setSection}){
                     { subject && viewTutor &&
                     <OpenTutorProfile tutor= {currentTutor} closeViewTutor= {closeViewTutor}/>
                     }
+
+        </motion.div>
+
+                
                 </div>
             </div>
         </div>

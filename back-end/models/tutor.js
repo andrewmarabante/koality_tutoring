@@ -9,7 +9,6 @@ const tutorSchema = new Schema({
     },
     password: {
         type : String,
-        required: true
       },
     first_name: {
         type : String,

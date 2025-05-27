@@ -1,6 +1,8 @@
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 var cors = require('cors');
 const app = express();
 const port = 3000;
@@ -35,6 +37,18 @@ app.options("*", cors(corsOptions));
 
 // Middleware to parse JSON requests
 app.use(express.json());
+
+//session setup
+
+app.use(session({
+  secret: 'your-secret-key', // change this in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set true only if using HTTPS
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/', indexRouter);

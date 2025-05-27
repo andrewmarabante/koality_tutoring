@@ -1,7 +1,20 @@
 const argon2 = require("argon2");
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const nodemailer = require('nodemailer');
+const GoogleStrategy = require('passport-google-oauth20')
 
+passport.use(
+  new GoogleStrategy({
+
+    callbackURL: '/login/google/redirect',
+    clientID: process.env.clientID,
+    clientSecret: process.env.clientSecret,
+
+  }, (accessToken, refreshToken, profile, done) => {
+    done(null, profile)
+  })
+)
 
 
 async function hashPassword(password) {
@@ -156,4 +169,5 @@ function sendStudentVerificationEmail(userEmail, token) {
     sendTutorVerificationEmail,
     sendStudentVerificationEmail,
     jwt,
+    passport  
   }
