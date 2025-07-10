@@ -11,9 +11,25 @@ import { useState } from 'react';
 export default function TutorHome(){
 
         const [section, setSection] = useState('Profile')
+        const server = import.meta.env.VITE_SERVER
+
     
     
         function changeSection(newSection){
+
+            if (newSection === 'Logout') {
+
+            fetch( server +'logoutTutor' , {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            })
+                .then((result) => result.json())
+                .then(data => {
+                    window.location.href = '/';
+                })
+                .catch(err => console.log(err))
+        }
             
             if(section === newSection){
                 return

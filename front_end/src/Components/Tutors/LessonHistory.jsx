@@ -36,7 +36,6 @@ export default function LessonHistory() {
                     setLoading(false)
                     setLessons(data.reverse())
                 }, 1000)
-                console.log(data)
             })
             .catch(err => {
                 console.log(err)
@@ -147,7 +146,7 @@ export default function LessonHistory() {
 
 
                                     return (
-                                        <div>
+                                        <div key={v4()}>
                                             <div className="grid grid-cols-4 gap-3 text-center text-xs px-5">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="">Student:</div>

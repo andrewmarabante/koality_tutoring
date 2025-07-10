@@ -255,6 +255,30 @@ async function googleLogin(req, res) {
     }
 }
 
+function logoutTutor(req,res){
+
+    res.clearCookie('tutorjwt', {
+        httpOnly: true,
+        sameSite: 'Lax', 
+        secure: true, 
+        path: '/',
+      });
+
+    res.json('success')
+}
+
+function logoutStudent(req,res){
+
+    res.clearCookie('studentjwt', {
+        httpOnly: true,
+        sameSite: 'Lax', 
+        secure: true, 
+        path: '/',
+      });
+
+    res.json('success')
+}
+
 module.exports = {
     login,
     tutorSignup,
@@ -263,5 +287,7 @@ module.exports = {
     studentLogin,
     membershipTotal,
     reportBug,
-    googleLogin
+    googleLogin,
+    logoutStudent,
+    logoutTutor,
 }

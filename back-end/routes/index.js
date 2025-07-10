@@ -11,6 +11,9 @@ router.get('/membershipTotal', indexControllers.membershipTotal)
 
 router.post('/reportBug', indexControllers.reportBug)
 
+router.post('/logoutStudent', indexControllers.logoutStudent)
+
+router.post('/logoutTutor', indexControllers.logoutTutor)
 
 
 module.exports = router;

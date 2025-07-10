@@ -11,8 +11,6 @@ export default function OpenChat({chatInfo, closeChat, currentUser, updateChatLa
     const [otherUsers, setOtherUsers] = useState(null)
     const [messages, setMessages] = useState(null)
 
-    const server = import.meta.env.VITE_SERVER + 'student'
-
     const textRef = useRef();
     const messageEndRef = useRef();
 
