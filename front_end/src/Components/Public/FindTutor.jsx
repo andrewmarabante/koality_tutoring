@@ -83,7 +83,7 @@ export default function FindTutor({setSection}){
                     <ViewTutors tutors= {tutors} subject = {subject} openViewTutor={openViewTutor} setSection={setSection}/>
                     }
                     { subject && viewTutor &&
-                    <OpenTutorProfile tutor= {currentTutor} closeViewTutor= {closeViewTutor}/>
+                    <OpenTutorProfile tutor= {currentTutor} closeViewTutor= {closeViewTutor} setSection={setSection}/>
                     }
 
         </motion.div>

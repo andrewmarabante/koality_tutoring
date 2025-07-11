@@ -13,239 +13,257 @@ const stripe = require("stripe")(process.env.stripeSecret)
 const cloudinary = require('../cloudinary');
 
 
-function loadProfile(req,res){
+function loadProfile(req, res) {
     const userId = req.userInfo.userId
 
-    Student.find({_id: userId})
-    .then(async result => {
+    Student.find({ _id: userId })
+        .then(async result => {
 
-        const user = result[0]
+            const user = result[0]
 
-        let paymentMethods = []
+            let paymentMethods = []
 
-        if(user.customerId){
-            try {
-                const paymentMethodsObj = await stripe.paymentMethods.list({ customer: user.customerId });
-                paymentMethods = paymentMethodsObj.data
-            } catch (error) {
-                console.error('Error fetching payment methods:', error);
-              }
-        }
+            if (user.customerId) {
+                try {
+                    const paymentMethodsObj = await stripe.paymentMethods.list({ customer: user.customerId });
+                    paymentMethods = paymentMethodsObj.data
+                } catch (error) {
+                    console.error('Error fetching payment methods:', error);
+                }
+            }
 
-        const userInfo = {
-            firstName: user.first_name,
-            lastName: user.last_name,
-            email: user.email,
-            emailVerified: user.emailVerified,
-            stripeVerified: user.stripeVerified,
-            photo: user.photo,
-            paymentMethods: paymentMethods,
-            membership: user.membership,
-            subject: user.subject,
-            age: user.age,
-            availability: user.availability,
-            membershipFrequency: user.membershipFrequency,
-        }
+            const userInfo = {
+                firstName: user.first_name,
+                lastName: user.last_name,
+                email: user.email,
+                emailVerified: user.emailVerified,
+                stripeVerified: user.stripeVerified,
+                photo: user.photo,
+                paymentMethods: paymentMethods,
+                membership: user.membership,
+                subject: user.subject,
+                age: user.age,
+                availability: user.availability,
+                membershipFrequency: user.membershipFrequency,
+            }
 
-        res.status(200).json(userInfo)
-    })
-    .catch(err => res.status(500).json(err))
+            res.status(200).json(userInfo)
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function updateProfile(req, res){
+function updateProfile(req, res) {
     const userId = req.userInfo.userId;
 
     const newData = req.body
 
-    if(newData.email !== ''){
+    if (newData.email !== '') {
         newData.emailVerified = false
     }
 
     const cleanedData = Object.fromEntries(
         Object.entries(newData).filter(([_, value]) => value !== '')
-      );
-    
-    Student.findByIdAndUpdate(userId, {$set: cleanedData})
-    .then(() => {
-        res.status(200).json('updated')
-    })
-    .catch(err => res.status(500).json(err))
+    );
+
+    Student.findByIdAndUpdate(userId, { $set: cleanedData })
+        .then(() => {
+            res.status(200).json('updated')
+        })
+        .catch(err => res.status(500).json(err))
 
 }
 
-function changeProfilePic(req, res){
+function changeProfilePic(req, res) {
 
 
-    left = ',x_'+req.body.left;
-    top = ',y_'+req.body.top;
-    height = ',h_'+req.body.height;
-    width = ',w_'+req.body.width;
+    left = ',x_' + req.body.left;
+    top = ',y_' + req.body.top;
+    height = ',h_' + req.body.height;
+    width = ',w_' + req.body.width;
 
-    transformations = 'c_crop'+height+width+left+top + '/';
+    transformations = 'c_crop' + height + width + left + top + '/';
 
-    cloudinary.uploader.upload(req.file.path, function(err, result){
-        if(err){
+    cloudinary.uploader.upload(req.file.path, function (err, result) {
+        if (err) {
             console.log(err)
             return res.status(500).json(err)
         }
         url = result.url
         splitURL = url.split('upload/')
-        origin = splitURL[0]+'upload/'
+        origin = splitURL[0] + 'upload/'
         image = splitURL[1]
 
         profilePicURL = origin + transformations + image
 
         const userId = req.userInfo.userId
-        Student.findByIdAndUpdate( userId, {photo: profilePicURL })
-        .then(() => {
-            res.json('saved')
-        })
-        .catch(err => res.status(500).json(err))
+        Student.findByIdAndUpdate(userId, { photo: profilePicURL })
+            .then(() => {
+                res.json('saved')
+            })
+            .catch(err => res.status(500).json(err))
     })
 }
 
-async function initiateEmailVerification(req,res){
+async function initiateEmailVerification(req, res) {
 
     const userId = req.userInfo.userId;
 
-    Student.find({_id: userId})
-    .then(async result => {
-        const emailToken = auth.generateVerificationToken(result[0].email)
-        const email = result[0].email
-        await auth.sendStudentVerificationEmail(email, emailToken)
-        res.status(200).json('email sent')
-    })
+    Student.find({ _id: userId })
+        .then(async result => {
+            const emailToken = auth.generateVerificationToken(result[0].email)
+            const email = result[0].email
+            await auth.sendStudentVerificationEmail(email, emailToken)
+            res.status(200).json('email sent')
+        })
 
 }
 
-async function verifyEmail(req,res){
+async function verifyEmail(req, res) {
 
-    const {token} = req.query
-
-
-    if (token == null){return res.status(401).json('Token Not Found')}
+    const { token } = req.query
 
 
-    
+    if (token == null) { return res.status(401).json('Token Not Found') }
+
+
+
     const email = await auth.jwt.verify(token, process.env.SECRET, (err, emailInfo) => {
-        if(err){
-          return res.status(403).json('Token No Longer Valid')
+        if (err) {
+            return res.status(403).json('Token No Longer Valid')
         }
         return emailInfo.email
     })
 
-    Student.find({email: email})
-    .then(result => {
-        
-        userId = result[0]._id
-
-        Student.findByIdAndUpdate(userId, {emailVerified: true})
+    Student.find({ email: email })
         .then(result => {
-            res.redirect(process.env.studentReroute)
-        })
-    })
-    .catch(err => res.status(500).json(err))
 
-    
+            userId = result[0]._id
+
+            Student.findByIdAndUpdate(userId, { emailVerified: true })
+                .then(result => {
+                    res.redirect(process.env.studentReroute)
+                })
+        })
+        .catch(err => res.status(500).json(err))
+
+
 
 
 }
 
-function createPaymentMethod(req,res){
+function createPaymentMethod(req, res) {
     const userId = req.userInfo.userId
-    const {email, payment_method} = req.body;
+    const { email, payment_method } = req.body;
 
-    Student.find({_id : userId})
-    .then( async result => {
-        const customerId = result[0].customerId
-        if(customerId){ 
+    Student.find({ _id: userId })
+        .then(async result => {
+            const customerId = result[0].customerId
+            if (customerId) {
 
-            try {
-
-                const paymentMethods = await stripe.paymentMethods.list({
-                    customer: customerId,
-                    type: 'card',
-                });
-
-                if(paymentMethods.data.length > 0){
-                    await stripe.paymentMethods.detach(paymentMethods.data[0].id);
-                }
-                
-                await stripe.paymentMethods.attach(payment_method, { customer: customerId });
-                await stripe.customers.update(customerId, { invoice_settings: { default_payment_method: payment_method }});
-
-                try{
-                    const intent = await stripe.setupIntents.create({
+                try {
+                    const paymentMethods = await stripe.paymentMethods.list({
                         customer: customerId,
+                        type: 'card',
+                    });
+
+                    if (paymentMethods.data.length > 0) {
+                        await stripe.paymentMethods.detach(paymentMethods.data[0].id);
+                    }
+
+                    await stripe.paymentMethods.attach(payment_method, { customer: customerId });
+                    await stripe.customers.update(customerId, {
+                        invoice_settings: { default_payment_method: payment_method },
+                    });
+
+                    const intent = await stripe.setupIntents.create({
                         payment_method: payment_method,
+                        customer: customerId,
                         confirm: true,
-                        automatic_payment_methods: { enabled: true },
+                        usage: 'off_session', // optional but recommended
                         return_url: 'http://localhost:5173/student',
                     });
-    
+
                     if (intent.status === "succeeded") {
-                        res.status(200).json('success')
-                    }else{
-                        await stripe.paymentMethods.detach(payment_method, { customer: customerId });
-                        res.status(200).json('failure')
+                        res.status(200).json('success');
+                    } else {
+                        await stripe.paymentMethods.detach(payment_method).catch(() => { });
+                        res.status(200).json('failure');
                     }
                 } catch (error) {
-                    res.status(500).json(error)
+                    return res.status(400).json({
+                        status: 'error',
+                        type: error.type,            // 'card_error'
+                        code: error.code,            // 'card_declined'
+                        decline_code: error.decline_code || null, //in depth decline reasoning
+                        message: error.message       // Human-readable error
+                    });
                 }
-              
 
-            } catch (error) {
-                res.status(500).json({ error: error.message });
-            }
 
-        }else{
-            const customer = await stripe.customers.create({
-            email: email,
-            payment_method: payment_method,
-            invoice_settings: {
-                default_payment_method: payment_method,
-            },
-            });
-
-            try{
-                const intent = await stripe.paymentIntents.create({
-                    amount: 0, 
-                    currency: "usd",
+            } else {
+                const customer = await stripe.customers.create({
+                    email: email,
                     payment_method: payment_method,
-                    customer: customer.id,
-                    confirm: true,
+                    invoice_settings: {
+                        default_payment_method: payment_method,
+                    },
                 });
 
-                if (intent.status === "succeeded") {
+                try {
+                    const paymentMethods = await stripe.paymentMethods.list({
+                        customer: customerId,
+                        type: 'card',
+                    });
 
-                    Student.findByIdAndUpdate(userId, { customerId: customer.id, defaultPayment: payment_method })
-                    .then(() => res.status(200).json('success'))
-                    .catch(err => res.status(500).json(err))   
-                                 
-                }else{
-                    await stripe.paymentMethods.detach(payment_method, { customer: customerId });
-                    res.status(200).json('no funds')
+                    if (paymentMethods.data.length > 0) {
+                        await stripe.paymentMethods.detach(paymentMethods.data[0].id);
+                    }
+
+                    await stripe.paymentMethods.attach(payment_method, { customer: customerId });
+                    await stripe.customers.update(customerId, {
+                        invoice_settings: { default_payment_method: payment_method },
+                    });
+
+                    const intent = await stripe.setupIntents.create({
+                        payment_method: payment_method,
+                        customer: customerId,
+                        confirm: true,
+                        usage: 'off_session', // optional but recommended
+                        return_url: 'http://localhost:5173/student',
+                    });
+
+                    if (intent.status === "succeeded") {
+                        res.status(200).json('success');
+                    } else {
+                        await stripe.paymentMethods.detach(payment_method).catch(() => { });
+                        res.status(200).json('failure');
+                    }
+                } catch (error) {
+                    return res.status(400).json({
+                        status: 'error',
+                        type: error.type,            // 'card_error'
+                        code: error.code,            // 'card_declined'
+                        decline_code: error.decline_code || null, //in depth decline reasoning
+                        message: error.message     
+                    });
                 }
-            } catch (error) {
-                res.status(500).json(error)
-            }
 
-            
-        }
-    })
+
+            }
+        })
 }
 
-function getTutors(req,res){
+function getTutors(req, res) {
 
     Tutor.find({})
-    .then(result => {
-        const verifiedTutors = result.filter(tutor => tutor.interviewed === true)
-        res.status(200).json(verifiedTutors)
-    })
-    .catch(err => res.status(500).json(err))
+        .then(result => {
+            const verifiedTutors = result.filter(tutor => tutor.interviewed === true)
+            res.status(200).json(verifiedTutors)
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function newRequest(req,res){
+function newRequest(req, res) {
 
     const userId = req.userInfo.userId
 
@@ -258,74 +276,74 @@ function newRequest(req,res){
     const newRequest = new Request(requestData)
 
     newRequest.save()
-    .then(async () => {
+        .then(async () => {
 
-        const [tutor, student] = await Promise.all([
-            Tutor.findById(requestData.tutorId).select('_id first_name last_name photo'),
-            Student.findById(requestData.studentId).select('_id first_name last_name photo')
-          ]);
+            const [tutor, student] = await Promise.all([
+                Tutor.findById(requestData.tutorId).select('_id first_name last_name photo'),
+                Student.findById(requestData.studentId).select('_id first_name last_name photo')
+            ]);
 
-        await Tutor.findByIdAndUpdate(requestData.tutorId, {$push: {students: student}}, {runValidators: true})
+            await Tutor.findByIdAndUpdate(requestData.tutorId, { $push: { students: student } }, { runValidators: true })
 
-        const chatData = {
-            users: [tutor, student],
-            name: 'default',
-            last_message: requestData.message,
-            last_message_date: new Date()
-        }
-
-        const newChat = new Chat(chatData)
-
-        newChat.save()
-        .then((result) => {
-
-            const chatId = result._id.toString();
-
-            const messageData = {
-                senderId: userId,
-                chatId: chatId,
-                body: requestData.message,
+            const chatData = {
+                users: [tutor, student],
+                name: 'default',
+                last_message: requestData.message,
+                last_message_date: new Date()
             }
 
-            const newMessage = new Message(messageData)
+            const newChat = new Chat(chatData)
 
-            newMessage.save()
-            .then(() => {
+            newChat.save()
+                .then((result) => {
 
-                res.status(200).json('success')
-            })
-            .catch(err => res.status(500).json(err))
+                    const chatId = result._id.toString();
+
+                    const messageData = {
+                        senderId: userId,
+                        chatId: chatId,
+                        body: requestData.message,
+                    }
+
+                    const newMessage = new Message(messageData)
+
+                    newMessage.save()
+                        .then(() => {
+
+                            res.status(200).json('success')
+                        })
+                        .catch(err => res.status(500).json(err))
+                })
+                .catch(err => res.status(500).json(err))
+
         })
         .catch(err => res.status(500).json(err))
-
-    })
-    .catch(err => res.status(500).json(err))
 }
 
-function getChats(req,res){
+function getChats(req, res) {
 
     const userId = req.userInfo.userId
 
-    Chat.find({ 'users._id' : userId })
-    .then(result => {
-        res.status(200).json([result, userId])
-    })
-    .catch(err => res.status(500).json(err))
+    Chat.find({ 'users._id': userId })
+        .then(result => {
+            res.status(200).json([result, userId])
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function getMessages(req,res){
+function getMessages(req, res) {
     const chatId = req.body.chatId
 
-    Message.find({ chatId: chatId})
-    .then(result => {
-        res.status(200).json(result)
+    Message.find({ chatId: chatId })
+        .then(result => {
+            res.status(200).json(result)
 
-    })
-    .catch(err => res.status(500).json(err))
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function createMessage(req,res){
-    const {body, chatId, senderId} = req.body
+function createMessage(req, res) {
+    const { body, chatId, senderId } = req.body
 
     const messageData = {
         body: body,
@@ -337,92 +355,92 @@ function createMessage(req,res){
     const newMessage = new Message(messageData);
 
     newMessage.save()
-    .then((messageResult) => {
+        .then((messageResult) => {
 
-        Chat.findByIdAndUpdate(messageResult.chatId, {
-            last_message: messageResult.body,
-            last_message_date: messageResult.createdAt
-        }, { runValidators: true, new: true })
-        .then(chatResult => {
-            res.status(200).json({messageResult: messageResult, chatResult: chatResult})
+            Chat.findByIdAndUpdate(messageResult.chatId, {
+                last_message: messageResult.body,
+                last_message_date: messageResult.createdAt
+            }, { runValidators: true, new: true })
+                .then(chatResult => {
+                    res.status(200).json({ messageResult: messageResult, chatResult: chatResult })
+                })
+
         })
-
-    })
-    .catch(err => res.status(500).json(err))
+        .catch(err => res.status(500).json(err))
 
 }
 
-function subscribe(req,res){
+function subscribe(req, res) {
     const userId = req.userInfo.userId;
     const membershipType = req.body.membership
 
-    Student.find({_id : userId})
-    .then(result => {
-        if(!result[0].customerId){
-            return res.status(200).json('No Payment Method')
-        }else{
-            Student.findByIdAndUpdate(
-                userId,                         
-                { membership: membershipType }, 
-                { new: true } 
-            )
-            .then((result) => {
-                res.status(200).json(result)
-            })
-        }
-    })
-    .catch(err => res.status(500).json(err))
+    Student.find({ _id: userId })
+        .then(result => {
+            if (!result[0].customerId) {
+                return res.status(200).json('No Payment Method')
+            } else {
+                Student.findByIdAndUpdate(
+                    userId,
+                    { membership: membershipType },
+                    { new: true }
+                )
+                    .then((result) => {
+                        res.status(200).json(result)
+                    })
+            }
+        })
+        .catch(err => res.status(500).json(err))
 
 }
 
-function cancelSubscription(req,res){
+function cancelSubscription(req, res) {
 
     const userId = req.userInfo.userId
 
-    Student.findByIdAndUpdate(userId, { membership: '' }, { new: true } )
-    .then(() => {
-        res.status(200).json('success')
-    })
-    .catch(err => res.status(500).json(err))
+    Student.findByIdAndUpdate(userId, { membership: '' }, { new: true })
+        .then(() => {
+            res.status(200).json('success')
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function updateAvailability(req,res){
+function updateAvailability(req, res) {
 
     const userId = req.userInfo.userId
     const availability = req.body.availability
 
-    Student.findByIdAndUpdate(userId, {availability: availability}, {new:true})
-    .then((result) => {
-        res.status(200).json(result)
-    })
-    .catch(err => res.status(500).json(err))
+    Student.findByIdAndUpdate(userId, { availability: availability }, { new: true })
+        .then((result) => {
+            res.status(200).json(result)
+        })
+        .catch(err => res.status(500).json(err))
 }
 
-function getLessons(req,res){
+function getLessons(req, res) {
 
     const userId = req.userInfo.userId
 
-    Lesson.find({student_id : userId})
-    .then(result => {
-        res.status(200).json(result)
-    })
-    .catch(err => res.status(500).json(err))
+    Lesson.find({ student_id: userId })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => res.status(500).json(err))
 
 }
 
-function confirmLesson(req,res){
-    
+function confirmLesson(req, res) {
+
     const userId = req.userInfo.userId
-    const {confirmed, lessonId} = req.body
+    const { confirmed, lessonId } = req.body
 
     Lesson.findByIdAndUpdate(lessonId, {
         student_confirmed: confirmed === true,
         student_denied: confirmed === false,
-      }, {new:true})
-      .then(result => {
-        res.status(200).json(result)
-      })
-      .catch(err => res.status(500).json(err))
+    }, { new: true })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => res.status(500).json(err))
 
 }
 
