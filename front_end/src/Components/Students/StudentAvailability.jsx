@@ -30,7 +30,8 @@ export default function StudentAvailability({ setShowAvailability, currentAvaila
 
     useEffect(() => {
 
-        if (currentAvailability) { setAvailability(currentAvailability[0]) }
+        console.log(currentAvailability)
+        if (currentAvailability.length > 0) { setAvailability(currentAvailability[0]) }
 
     }, [currentAvailability])
 
@@ -130,9 +131,14 @@ export default function StudentAvailability({ setShowAvailability, currentAvaila
                             Schedule is made the friday prior to this week!
                         </div>}
 
-                    {loading && <CircularProgress size={40} />}
-                    {!loading && fetched && <div className='h-10'><AnimatedCheckmark /></div>}
-                    <Button variant='contained' onClick={() => { handleSubmit() }} fullWidth>Submit</Button>
+                        <Button variant='contained' onClick={() => { handleSubmit() }} fullWidth>Submit
+                        <div className='pl-3'>
+                            {loading && <div className='pt-2'>
+                                <CircularProgress size={20} color='green'/>
+                            </div>}
+                            {!loading && fetched && <div className='h-9'><AnimatedCheckmark /></div>}
+                        </div>
+                        </Button>
                     <Button variant='text' color='warning' type='button' onClick={() => setShowAvailability(false)} fullWidth>Back</Button>
                 </div>
 

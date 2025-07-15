@@ -195,59 +195,46 @@ function createPaymentMethod(req, res) {
                         type: error.type,            // 'card_error'
                         code: error.code,            // 'card_declined'
                         decline_code: error.decline_code || null, //in depth decline reasoning
-                        message: error.message       // Human-readable error
+                        message: error.message      
                     });
                 }
 
 
             } else {
-                const customer = await stripe.customers.create({
-                    email: email,
-                    payment_method: payment_method,
-                    invoice_settings: {
-                        default_payment_method: payment_method,
-                    },
-                });
+                const customer = await stripe.customers.create({ email });
 
                 try {
-                    const paymentMethods = await stripe.paymentMethods.list({
-                        customer: customerId,
-                        type: 'card',
-                    });
+                    // Attach the new payment method
+                    await stripe.paymentMethods.attach(payment_method, { customer: customer.id });
 
-                    if (paymentMethods.data.length > 0) {
-                        await stripe.paymentMethods.detach(paymentMethods.data[0].id);
-                    }
-
-                    await stripe.paymentMethods.attach(payment_method, { customer: customerId });
-                    await stripe.customers.update(customerId, {
+                    // Set as default
+                    await stripe.customers.update(customer.id, {
                         invoice_settings: { default_payment_method: payment_method },
                     });
 
                     const intent = await stripe.setupIntents.create({
-                        payment_method: payment_method,
-                        customer: customerId,
+                        payment_method,
+                        customer: customer.id,
                         confirm: true,
-                        usage: 'off_session', // optional but recommended
+                        usage: 'off_session',
                         return_url: 'http://localhost:5173/student',
                     });
 
                     if (intent.status === "succeeded") {
-                        res.status(200).json('success');
-                    } else {
-                        await stripe.paymentMethods.detach(payment_method).catch(() => { });
-                        res.status(200).json('failure');
+                        Student.findByIdAndUpdate(userId, { $set: { customerId: customer.id } })
+                            .then(() => { return res.status(200).json('success'); }
+                            )
                     }
+
                 } catch (error) {
-                    return res.status(400).json({
+                    res.status(400).json({
                         status: 'error',
-                        type: error.type,            // 'card_error'
-                        code: error.code,            // 'card_declined'
-                        decline_code: error.decline_code || null, //in depth decline reasoning
-                        message: error.message     
+                        type: error.type,
+                        code: error.code,
+                        decline_code: error.decline_code || null,
+                        message: error.message,
                     });
                 }
-
 
             }
         })

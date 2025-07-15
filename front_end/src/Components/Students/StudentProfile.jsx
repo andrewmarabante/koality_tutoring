@@ -289,7 +289,7 @@ export default function StudentProfile({ setSection }) {
                             </motion.div>}
                         </AnimatePresence>
                         {userInfo.membership &&
-                            <div className={`border ${(!userInfo.age || !userInfo.membershipFrequency || !userInfo.availability) ? 'border-red-300' : 'border-green-400' } rounded-2xl w-11/12 py-2`}>
+                            <div className={`border ${(!userInfo.age || !userInfo.membershipFrequency || !userInfo.availability.length === 0) ? 'border-red-300' : 'border-green-400' } rounded-2xl w-11/12 py-2`}>
                                 <div className="text-lg text-center">Membership Zone:</div>
                                 <div className="flex justify-between px-5 items-center py-3">
                                     <div className="text-lg font-roboto">Frequency: </div>
@@ -332,7 +332,7 @@ export default function StudentProfile({ setSection }) {
                                 </div>
                                 <div className="flex justify-between px-5 items-center py-2">
                                     <div className="text-lg font-roboto">Availability: </div>
-                                    <div className="text-center w-full font-roboto-title-italic">{userInfo.availability ? <span className="text-green-400">Saved</span> : <span className="text-red-400">None</span>}</div>
+                                    <div className="text-center w-full font-roboto-title-italic">{userInfo.availability.length > 0 ? <span className="text-green-400">Saved</span> : <span className="text-red-400">None</span>}</div>
                                     <img src={editImg} alt="edit" className="h-5" onClick={()=>setShowAvailability(true)}/>
                                 </div>
                             </div>}

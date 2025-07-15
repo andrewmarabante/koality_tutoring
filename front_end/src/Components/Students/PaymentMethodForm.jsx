@@ -57,6 +57,8 @@ export default function PaymentMethodForm({ togglePayment, email, toggleReset })
       .then(result => result.json())
       .then(data => {
 
+        console.log(data)
+
         setLoading(false)
 
 
