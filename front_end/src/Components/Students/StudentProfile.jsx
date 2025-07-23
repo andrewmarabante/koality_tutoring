@@ -28,7 +28,7 @@ import StudentAvailability from "./StudentAvailability"
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
-const subjects = ['Math', 'English', 'Biology',]
+const subjects = import.meta.env.VITE_MEMBERSHIP_SUBJECTS.split(',');
 const ages = Array.from({ length: 100 }, (_, i) => i + 1);
 const frequencies = ['1 Lesson', '2 Lessons']
 
@@ -49,6 +49,7 @@ export default function StudentProfile({ setSection }) {
     const [editMembership, setEditMembership] = useState(false)
     const [openCancelMembership, setOpenCancelMembership] = useState(false)
     const [showAvailability, setShowAvailability] = useState(false)
+    const [newHomeworkPhotos, setNewHomeworkPhotos] = useState([])
 
 
 
@@ -76,6 +77,26 @@ export default function StudentProfile({ setSection }) {
     }, [reset])
 
     function toggleReset() {
+        setReset(v4())
+    }
+
+    function newImage(e) {
+        if (!e.target.files[0]) {
+            return
+        }
+        const newImage = e.target.files[0];
+        let imageArray = [...newHomeworkPhotos];
+        imageArray.push(newImage);
+        e.target.value = null;
+        setNewHomeworkPhotos(imageArray);
+    }
+
+    function deleteImage(image) {
+        let index = newHomeworkPhotos.indexOf(image);
+        let tempImages = newHomeworkPhotos
+        tempImages.splice(index, 1)
+
+        setNewHomeworkPhotos(tempImages)
         setReset(v4())
     }
 
@@ -107,12 +128,15 @@ export default function StudentProfile({ setSection }) {
     function handleSubmit(e) {
         e.preventDefault()
 
+        const formData = new FormData();
+
         const firstName = e.target.firstName.value
         const lastName = e.target.lastName.value
         const subject = e.target.subject.value
         const email = e.target.email.value
-        const age = parseInt(e.target.age.value)
+        let age = parseInt(e.target.age.value)
         const frequency = e.target.frequency.value
+        const phone = e.target.phone.value
 
         let sanitizedEmail
 
@@ -125,35 +149,41 @@ export default function StudentProfile({ setSection }) {
             }
         }
 
-
-
-        const data = {
-            first_name: firstName,
-            last_name: lastName,
-            email: email,
-            subject: subject,
-            age: age,
-            membershipFrequency: frequency,
+        if (Number.isNaN(age)) {
+            age = ''
         }
+
+        formData.append('first_name', firstName);
+        formData.append('last_name', lastName);
+        formData.append('email', sanitizedEmail || '');
+        formData.append('subject', subject);
+        formData.append('age', age);
+        formData.append('membershipFrequency', frequency);
+        formData.append('phone', phone);
+
+        if (newHomeworkPhotos.length > 0) {
+            for (let i = 0; i < newHomeworkPhotos.length; i++) {
+                formData.append('homework', newHomeworkPhotos[i])
+            }
+        }
+
 
         setLoading(true)
 
         fetch(server + '/updateProfile', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': '*',
-            },
-            body: JSON.stringify(data),
+            body: formData,
             credentials: 'include'
         })
             .then(result => result.json())
             .then(data => {
-                if (data === 'updated') {
-                    setPosted(true)
-                    setTimeout(() => setLoading(false), 1000)
-                }
+                setUserInfo(prev => ({
+                    ...prev,
+                    ...data
+                }));
+                setNewHomeworkPhotos([])
+                setPosted(true)
+                setTimeout(() => setLoading(false), 1000)
             })
             .catch(err => console.log(err))
 
@@ -207,6 +237,29 @@ export default function StudentProfile({ setSection }) {
             .catch(err => console.log(err))
     }
 
+    function deleteOldHomework(imageString) {
+
+        const data = {
+            imageString: imageString
+        }
+
+        fetch(server + '/deleteHomework', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then(result => result.json())
+            .then(data => {
+                setUserInfo(data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     return (
         <div className="h-11/12 w-9/12">
             <form className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
@@ -236,31 +289,13 @@ export default function StudentProfile({ setSection }) {
                                     </div>
                                 </div>}
                             </div>
-                            {!userInfo.emailVerified ? <div className="text-red-300  text-xs text-center p-1">You email has not been verified</div> : <div className="text-green-300  text-xs text-center p-1">Verified</div>}
+                            {!userInfo.emailVerified ? <div className="text-red-300  text-xs text-center p-1">Your email has not been verified</div> : <div className="text-green-300  text-xs text-center p-1">Verified</div>}
                             <div className="flex">
                                 {sent && <div className="text-xs font-roboto-title-italic p-1">Email sent</div>}
                                 {!userInfo.emailVerified && <button className="text-xs border-blue-200 border w-fit rounded-lg py-1 px-2" type="button" onClick={handleEmailSend}>{!sent ? 'Send Link' : <div className="w-10">{emailLoad ? <CircularProgress size={10} /> : 'Resend'}</div>}</button>}
                             </div>
                         </div>
-                        <div className="flex justify-between flex-col p-2 w-full items-center">
-                            <div className="text-lg text-center">Subject:</div>
-                            <Autocomplete
-                                placeholder={userInfo.subject ? userInfo.subject : 'Choose Subject'}
-                                options={subjects}
-                                name="subject"
-                                sx={{
-                                    width: '60%',
-                                    backgroundColor: 'transparent',
-                                    '& .MuiInputBase-root': {
-                                        fontFamily: 'roboto, sans-serif',
-                                    },
-                                    '& .MuiAutocomplete-input': {
-                                        fontFamily: 'roboto, sans-serif',
-                                    },
-                                    boxShadow: 'none',
-                                }}
-                            />
-                        </div>
+
                         <div className="flex justify-between flex-col p-2">
                             <div className="text-lg text-center">Membership:</div>
                             <div className="relative">
@@ -289,8 +324,29 @@ export default function StudentProfile({ setSection }) {
                             </motion.div>}
                         </AnimatePresence>
                         {userInfo.membership &&
-                            <div className={`border ${(!userInfo.age || !userInfo.membershipFrequency || !userInfo.availability.length === 0) ? 'border-red-300' : 'border-green-400' } rounded-2xl w-11/12 py-2`}>
+                            <div className={`border ${(!userInfo.age || !userInfo.membershipFrequency || !userInfo.availability.length === 0 || !userInfo.subject || !userInfo.phone || userInfo.homework?.length === 0) ? 'border-red-300' : 'border-green-400'} rounded-2xl w-11/12 py-2`}>
                                 <div className="text-lg text-center">Membership Zone:</div>
+
+                                <div className="flex justify-between px-5 items-center py-3">
+                                    <div className="text-lg text-center">Subject:</div>
+                                    <Autocomplete
+                                        placeholder={userInfo.subject ? userInfo.subject : 'Choose Subject'}
+                                        options={subjects}
+                                        name="subject"
+                                        sx={{
+                                            width: '60%',
+                                            backgroundColor: 'transparent',
+                                            '& .MuiInputBase-root': {
+                                                fontFamily: 'roboto, sans-serif',
+                                            },
+                                            '& .MuiAutocomplete-input': {
+                                                fontFamily: 'roboto, sans-serif',
+                                            },
+                                            boxShadow: 'none',
+                                        }}
+                                    />
+                                </div>
+
                                 <div className="flex justify-between px-5 items-center py-3">
                                     <div className="text-lg font-roboto">Frequency: </div>
                                     <Autocomplete
@@ -333,7 +389,53 @@ export default function StudentProfile({ setSection }) {
                                 <div className="flex justify-between px-5 items-center py-2">
                                     <div className="text-lg font-roboto">Availability: </div>
                                     <div className="text-center w-full font-roboto-title-italic">{userInfo.availability.length > 0 ? <span className="text-green-400">Saved</span> : <span className="text-red-400">None</span>}</div>
-                                    <img src={editImg} alt="edit" className="h-5" onClick={()=>setShowAvailability(true)}/>
+                                    <img src={editImg} alt="edit" className="h-5" onClick={() => setShowAvailability(true)} />
+                                </div>
+
+                                <div className="flex justify-between px-5 items-center py-2">
+                                    <div className="text-lg font-roboto">Phone: </div>
+                                    <input type="text" placeholder={userInfo.phone ? userInfo.phone : 'Only numbers!'} className="text-center border-gray-300 border rounded-lg p-1" name="phone" />
+                                </div>
+                                <div className="text-xs px-5 text-center">
+                                    ** We use your number to text you when scheduled, nothing else! (required) **
+                                </div>
+
+                                <div className="flex justify-between flex-col px-5 items-center py-2">
+                                    <div className="text-lg font-roboto w-full pb-2">Material / Homework: <span className="text-sm font-roboto-title-italic">(Required)</span></div>
+                                    <div className="w-full flex flex-col justify-center items-center">
+                                        <div className="grid grid-cols-2 rounded-lg gap-3 w-full overflow-auto py-3">
+
+                                            {userInfo.homework && userInfo.homework.map((image) => {
+
+                                                return (
+                                                    <div key={v4()} className="relative">
+                                                        <img src={image} alt="uploaded image" className="h-30 w-25 rounded-lg" />
+                                                        <img src={x} alt="X" className="h-5 absolute -top-1 right-0 border rounded-full bg-red-300" onClick={() => deleteOldHomework(image)} />
+
+                                                    </div>
+                                                )
+                                            })}
+
+                                            {newHomeworkPhotos && newHomeworkPhotos.map((image) => {
+
+                                                return (
+                                                    <div key={v4()} className="relative">
+                                                        <img src={URL.createObjectURL(image)} alt="uploaded image" className="h-30 w-25 rounded-lg" />
+                                                        <img src={x} alt="X" className="h-5 absolute -top-1 right-0 border rounded-full bg-white" onClick={() => deleteImage(image)} />
+                                                        <div className="text-xs font-roboto-title-italic max-w-28">{image.name ? image.name : 'Untitled'}</div>
+                                                    </div>
+                                                )
+                                            })}
+                                            {((userInfo.homework?.length || 0) + (newHomeworkPhotos?.length || 0)) < 4 && <div className="h-30 w-25 bg-blue-200 rounded-xl flex justify-end items-start p-1"><img src={plus} alt='add' className="h-8 hover:bg-blue-100 rounded-md" onClick={() => { document.getElementById('imageInput').click() }}></img></div>}
+                                            <input id="imageInput" type="file" className="hidden" onChange={newImage}></input>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="text-xs px-5">
+                                    Schedules are made every Friday at 5pm for the following week and students will be scheduled based on their current subject, availability, age, and frequency.
+                                    If these are not specified, you will not be scheduled. Students will be charged when scheduled
                                 </div>
                             </div>}
                         <div className="flex justify-betwee items-center flex-col p-2 w-full">
@@ -386,8 +488,8 @@ export default function StudentProfile({ setSection }) {
                             exitEdit={exitEdit}
                         />
                     }
-                </div> : 
-                <StudentAvailability setShowAvailability={setShowAvailability} currentAvailability={userInfo.availability} setUserInfo={setUserInfo}/>
+                </div> :
+                    <StudentAvailability setShowAvailability={setShowAvailability} currentAvailability={userInfo.availability} setUserInfo={setUserInfo} />
                 }
 
             </form>

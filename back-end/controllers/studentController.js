@@ -45,6 +45,8 @@ function loadProfile(req, res) {
                 age: user.age,
                 availability: user.availability,
                 membershipFrequency: user.membershipFrequency,
+                ...(user.phone !== undefined && { phone: user.phone }),
+                ...(user.homework !== undefined && { homework: user.homework })
             }
 
             res.status(200).json(userInfo)
@@ -52,12 +54,15 @@ function loadProfile(req, res) {
         .catch(err => res.status(500).json(err))
 }
 
-function updateProfile(req, res) {
-    const userId = req.userInfo.userId;
+async function updateProfile(req, res) {
 
+
+    const userId = req.userInfo.userId;
+    const files = req.files
     const newData = req.body
 
-    if (newData.email !== '') {
+
+    if (newData.email !== '' && newData.email !== null) {
         newData.emailVerified = false
     }
 
@@ -65,9 +70,39 @@ function updateProfile(req, res) {
         Object.entries(newData).filter(([_, value]) => value !== '')
     );
 
-    Student.findByIdAndUpdate(userId, { $set: cleanedData })
-        .then(() => {
-            res.status(200).json('updated')
+    if (files && files.length > 0) {
+
+        const uploadPromises = files.map(file => cloudinary.uploader.upload(file.path));
+        const uploadedResults = await Promise.all(uploadPromises);
+        const uploadedUrls = uploadedResults.map(result => result.secure_url);
+
+        await Student.findByIdAndUpdate(userId, {
+            $push: { homework: { $each: uploadedUrls } },
+        });
+
+
+    }
+
+    //I NEED TO UPDATE HOMEWORK IMAGES
+
+    Student.findByIdAndUpdate(userId, { $set: cleanedData }, { new: true })
+        .then((result) => {
+            const userInfo = {
+                firstName: result.first_name,
+                lastName: result.last_name,
+                email: result.email,
+                emailVerified: result.emailVerified,
+                stripeVerified: result.stripeVerified,
+                photo: result.photo,
+                membership: result.membership,
+                subject: result.subject,
+                age: result.age,
+                availability: result.availability,
+                membershipFrequency: result.membershipFrequency,
+                homework: result.homework
+            }
+
+            res.status(200).json(userInfo)
         })
         .catch(err => res.status(500).json(err))
 
@@ -195,7 +230,7 @@ function createPaymentMethod(req, res) {
                         type: error.type,            // 'card_error'
                         code: error.code,            // 'card_declined'
                         decline_code: error.decline_code || null, //in depth decline reasoning
-                        message: error.message      
+                        message: error.message
                     });
                 }
 
@@ -431,6 +466,27 @@ function confirmLesson(req, res) {
 
 }
 
+function deleteHomework(req,res){
+    const userId = req.userInfo.userId
+    const imageString = req.body.imageString;
+
+    Student.find({_id: userId})
+    .then(result => {
+        let homeworkArray = result[0].homework
+        const index = homeworkArray.indexOf(imageString)
+        homeworkArray.splice(index, 1)
+
+        Student.findByIdAndUpdate(userId, {homework: homeworkArray}, {new: true})
+        .then(result => {
+                res.status(200).json(result)
+        })
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+
+}
+
 module.exports = {
     loadProfile,
     updateProfile,
@@ -447,5 +503,6 @@ module.exports = {
     cancelSubscription,
     updateAvailability,
     getLessons,
-    confirmLesson
+    confirmLesson,
+    deleteHomework,
 }

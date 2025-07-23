@@ -15,7 +15,9 @@ router.get('/emailVerification', auth.verifyStudentToken, studentController.init
 
 router.get('/verifyEmail', studentController.verifyEmail)
 
-router.post('/updateProfile', auth.verifyStudentToken, studentController.updateProfile)
+router.post('/updateProfile', auth.verifyStudentToken, upload.array('homework', 4), studentController.updateProfile)
+
+router.delete('/deleteHomework', auth.verifyStudentToken, studentController.deleteHomework)
 
 router.post('/changeProfilePic', auth.verifyStudentToken, upload.single('image'), studentController.changeProfilePic)
 
