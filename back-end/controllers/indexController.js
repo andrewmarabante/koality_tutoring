@@ -2,7 +2,10 @@ const auth = require('../auth')
 const User = require('../models/user');
 const Tutor = require('../models/tutor');
 const Student = require('../models/student');
+const Chat = require('../models/chat');
 const Report = require('../models/report');
+const Message = require('../models/message');
+
 const { picture } = require('../cloudinary');
 
 
@@ -78,6 +81,7 @@ function studentSignup(req, res) {
             if (result.length === 0) {
 
                 const hashedPassword = await auth.hashPassword(req.body.password)
+
                 const details = {
                     email: req.body.username,
                     password: hashedPassword,
@@ -90,8 +94,46 @@ function studentSignup(req, res) {
                 const newStudent = new Student(details)
 
                 newStudent.save()
-                    .then(() => {
-                        res.json('saved')
+                    .then(async (result) => {
+
+                        const [bossman, student] = await Promise.all([
+                            Tutor.findById(process.env.bossmanId).select('_id first_name last_name photo'),
+                            Student.findById(result._id).select('_id first_name last_name photo')
+                        ]);
+                        const message = "Hello!! Welcome to Koality Tutoring, if you need help with anything please don't hesitate to ask me."
+                        const chatData = {
+                            users: [bossman, student],
+                            name: 'default',
+                            last_message: message,
+                            last_message_date: new Date()
+                        }
+                        const newChat = new Chat(chatData)
+
+                        newChat.save()
+                            .then((result) => {
+                                const chatId = result._id.toString();
+
+                                const messageData = {
+                                    senderId: bossman._id,
+                                    chatId: chatId,
+                                    body: message,
+                                }
+
+                                console.log(messageData)
+
+                                const newMessage = new Message(messageData)
+
+                                console.log('after message')
+
+                                newMessage.save()
+                                    .then(() => {
+                                        console.log('inside')
+                                        res.status(200).json('success')
+                                    })
+                                    .catch(err => res.status(500).json(err))
+                            })
+                            .catch(err => res.status(500).json(err))
+
                     })
                     .catch((err) => {
                         res.status(500).json(err)
@@ -197,7 +239,6 @@ async function googleLogin(req, res) {
         Student.find({ email: user.email })
             .then(result => {
                 if (result.length === 0) {
-                    console.log(user)
                     const userData = {
                         first_name: user.given_name,
                         last_name: user.family_name,
@@ -210,10 +251,44 @@ async function googleLogin(req, res) {
                     const newStudent = new Student(userData)
 
                     newStudent.save()
-                        .then(result => {
-                            accessToken = auth.createToken(result._id)
-                            res.cookie('studentjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
-                            res.redirect(process.env.studentReroute)
+                        .then(async studentResult => {
+
+                            const [bossman, student] = await Promise.all([
+                                Tutor.findById(process.env.bossmanId).select('_id first_name last_name photo'),
+                                Student.findById(studentResult._id).select('_id first_name last_name photo')
+                            ]);
+                            const message = "Hello!! Welcome to Koality Tutoring, if you need help with anything please don't hesitate to ask me."
+                            const chatData = {
+                                users: [bossman, student],
+                                name: 'default',
+                                last_message: message,
+                                last_message_date: new Date()
+                            }
+
+                            const newChat = new Chat(chatData)
+
+                            newChat.save()
+                                .then((result) => {
+
+                                    const chatId = result._id.toString();
+
+                                    const messageData = {
+                                        senderId: bossman._id,
+                                        chatId: chatId,
+                                        body: message,
+                                    }
+
+                                    const newMessage = new Message(messageData)
+
+                                    newMessage.save()
+                                        .then(() => {
+                                            accessToken = auth.createToken(studentResult._id)
+                                            res.cookie('studentjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
+                                            res.redirect(process.env.studentReroute)
+                                        })
+                                        .catch(err => res.status(500).json(err))
+                                })
+                                .catch(err => res.status(500).json(err))
                         })
                 } else {
                     accessToken = auth.createToken(result[0]._id)
@@ -255,26 +330,26 @@ async function googleLogin(req, res) {
     }
 }
 
-function logoutTutor(req,res){
+function logoutTutor(req, res) {
 
     res.clearCookie('tutorjwt', {
         httpOnly: true,
-        sameSite: 'Lax', 
-        secure: true, 
+        sameSite: 'Lax',
+        secure: true,
         path: '/',
-      });
+    });
 
     res.json('success')
 }
 
-function logoutStudent(req,res){
+function logoutStudent(req, res) {
 
     res.clearCookie('studentjwt', {
         httpOnly: true,
-        sameSite: 'Lax', 
-        secure: true, 
+        sameSite: 'Lax',
+        secure: true,
         path: '/',
-      });
+    });
 
     res.json('success')
 }

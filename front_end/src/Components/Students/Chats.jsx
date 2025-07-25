@@ -84,7 +84,7 @@ export default function Chats(){
                         <div className="text-2xl p-5 ">Messages</div>
                         <div className="w-full justify-start px-5 mb-5"><div className="font-roboto-title border-b w-fit">Inbox</div></div>
                         <div className="overflow-scroll w-full">
-                            {chats && chats.map(chat => {
+                            {chats ? chats.map(chat => {
 
                                 let otherUsers = chat.users.filter(userInfo => userInfo._id !== currentUser)
 
@@ -121,7 +121,7 @@ export default function Chats(){
                                         </div>
                                     </div>
                                 )
-                            })}
+                            }) : <div>No Messages</div>}
                         </div>
                     </div>
 
