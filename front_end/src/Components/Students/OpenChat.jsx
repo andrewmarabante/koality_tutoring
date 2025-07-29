@@ -14,6 +14,8 @@ export default function OpenChat({chatInfo, closeChat, currentUser, updateChatLa
     const textRef = useRef();
     const messageEndRef = useRef();
 
+    const server = import.meta.env.VITE_SERVER + 'student'
+
 
     useEffect(()=> {
 

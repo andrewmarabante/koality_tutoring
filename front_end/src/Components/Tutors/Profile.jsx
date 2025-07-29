@@ -155,7 +155,7 @@ export default function Profile(){
     }
 
     return(
-        <form className="flex justify-start items-center h-11/12 w-9/12 overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
+        <form className="flex justify-start items-center h-11/12 w-10/12 overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
             {!edit ? <div className="flex flex-col items-center w-full">
                 <div className="font-roboto text-4xl p-2 border-b text-center px-10 mb-2">Profile</div>
                 <div className="relative p-5">
@@ -218,14 +218,6 @@ export default function Profile(){
                         name="bio"
                         />
                 </div>
-                <div className={`flex items-center justify-center`}>
-                    <button className="text-lg p-2 rounded-lg px-5 border-gray-300 border" type="submit">Update</button>
-                    {loading && <CircularProgress size={40} className="ml-2"/>}
-                    {!loading && posted && <div className="h-8">
-                        <AnimatedCheckmark />
-                    </div>}
-                </div>
-                {message && <div className="text-red-300 text-xs">{message}</div>}
 
 
                 <div className={`mt-3 flex gap-5 items-center ${!userInfo.interviewed ? 'border-red-300' : 'border-green-300'} border rounded-lg p-1 px-3`}>
@@ -234,6 +226,14 @@ export default function Profile(){
                 </div>
                 {!userInfo.interviewed && <div className="text-xs w-9/12 text-center p-2 font-roboto-title-italic">-You need to complete a quick discord interview! Go to messages and message the Bossman!</div>}
 
+                <div className={`flex items-center justify-center py-3`}>
+                    <button className="text-lg p-2 rounded-lg px-5 border-gray-300 border" type="submit">Update</button>
+                    {loading && <CircularProgress size={40} className="ml-2"/>}
+                    {!loading && posted && <div className="h-8">
+                        <AnimatedCheckmark />
+                    </div>}
+                </div>
+                {message && <div className="text-red-300 text-xs">{message}</div>}
                 <div></div>
             </div> :
             

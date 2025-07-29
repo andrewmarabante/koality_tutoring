@@ -128,6 +128,7 @@ export default function StudentProfile({ setSection }) {
     function handleSubmit(e) {
         e.preventDefault()
 
+        console.log(e.target)
         const formData = new FormData();
 
         const firstName = e.target.firstName.value
@@ -261,7 +262,7 @@ export default function StudentProfile({ setSection }) {
     }
 
     return (
-        <div className="h-11/12 w-9/12">
+        <div className="h-11/12 w-10/12">
             <form className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
 
                 {!showAvailability ? <div className="w-full ">
@@ -310,7 +311,7 @@ export default function StudentProfile({ setSection }) {
                                     className="text-center border-gray-300 border rounded-lg p-1 select-none"
                                     readOnly
                                 />
-                                <img src={userInfo && (userInfo.membership === '' || userInfo.membership === null) ? plus : !editMembership ? editImg : up} alt="edit" className="h-5 absolute -right-6 top-2" onClick={() => { userInfo && (userInfo.membership === '' || userInfo.membership === null) ? setSection('Plans / Pricing') : editMembership ? setEditMembership(false) : setEditMembership(true) }} />
+                                <img src={userInfo && (userInfo.membership === '' || userInfo.membership === null || userInfo.membership === undefined) ? plus : !editMembership ? editImg : up} alt="edit" className="h-5 absolute -right-6 top-2" onClick={() => { userInfo && (userInfo.membership === '' || userInfo.membership === null || userInfo.membership === undefined) ? setSection('Plans / Pricing') : editMembership ? setEditMembership(false) : setEditMembership(true) }} />
                             </div>
                         </div>
                         <AnimatePresence>

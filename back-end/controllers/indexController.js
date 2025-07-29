@@ -59,8 +59,41 @@ function tutorSignup(req, res) {
                 const newTutor = new Tutor(details)
 
                 newTutor.save()
-                    .then(() => {
-                        res.json('saved')
+                    .then(async (result) => {
+
+                        const [bossman, tutor] = await Promise.all([
+                            Tutor.findById(process.env.bossmanId).select('_id first_name last_name photo'),
+                            Tutor.findById(result._id).select('_id first_name last_name photo')
+                        ]);
+                        const message = "Hello!! Welcome to Koality Tutoring, if you need help with anything please don't hesitate to ask me."
+                        const chatData = {
+                            users: [bossman, tutor],
+                            name: 'default',
+                            last_message: message,
+                            last_message_date: new Date()
+                        }
+                        const newChat = new Chat(chatData)
+
+                        newChat.save()
+                            .then((result) => {
+                                const chatId = result._id.toString();
+
+                                const messageData = {
+                                    senderId: bossman._id,
+                                    chatId: chatId,
+                                    body: message,
+                                }
+
+                                const newMessage = new Message(messageData)
+
+                                newMessage.save()
+                                    .then(() => {
+                                        res.status(200).json('success')
+                                    })
+                                    .catch(err => res.status(500).json(err))
+                            })
+                            .catch(err => res.status(500).json(err))
+
                     })
                     .catch((err) => {
                         res.status(500).json(err)
@@ -119,15 +152,10 @@ function studentSignup(req, res) {
                                     body: message,
                                 }
 
-                                console.log(messageData)
-
                                 const newMessage = new Message(messageData)
-
-                                console.log('after message')
 
                                 newMessage.save()
                                     .then(() => {
-                                        console.log('inside')
                                         res.status(200).json('success')
                                     })
                                     .catch(err => res.status(500).json(err))
@@ -290,6 +318,7 @@ async function googleLogin(req, res) {
                                 })
                                 .catch(err => res.status(500).json(err))
                         })
+                        .catch(err => res.json(err))
                 } else {
                     accessToken = auth.createToken(result[0]._id)
                     res.cookie('studentjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
@@ -313,14 +342,50 @@ async function googleLogin(req, res) {
 
                     }
 
+
                     const newTutor = new Tutor(userData)
 
                     newTutor.save()
-                        .then(result => {
-                            accessToken = auth.createToken(result._id)
-                            res.cookie('tutorjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
-                            res.redirect(process.env.tutorReroute)
+                        .then(async tutorResult => {
+
+                            const [bossman, tutor] = await Promise.all([
+                                Tutor.findById(process.env.bossmanId).select('_id first_name last_name photo'),
+                                Tutor.findById(tutorResult._id).select('_id first_name last_name photo')
+                            ]);
+                            const message = "Hello!! Welcome to Koality Tutoring, if you need help with anything please don't hesitate to ask me."
+                            const chatData = {
+                                users: [bossman, tutor],
+                                name: 'default',
+                                last_message: message,
+                                last_message_date: new Date()
+                            }
+
+                            const newChat = new Chat(chatData)
+
+                            newChat.save()
+                                .then((result) => {
+
+                                    const chatId = result._id.toString();
+
+                                    const messageData = {
+                                        senderId: bossman._id,
+                                        chatId: chatId,
+                                        body: message,
+                                    }
+
+                                    const newMessage = new Message(messageData)
+
+                                    newMessage.save()
+                                        .then(() => {
+                                            accessToken = auth.createToken(tutorResult._id)
+                                            res.cookie('tutorjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
+                                            res.redirect(process.env.tutorReroute)
+                                        })
+                                        .catch(err => res.status(500).json(err))
+                                })
+                                .catch(err => res.status(500).json(err))
                         })
+                        .catch(err => res.json(err))
                 } else {
                     accessToken = auth.createToken(result[0]._id)
                     res.cookie('tutorjwt', accessToken, { httpOnly: true, path: '/', sameSite: 'None', secure: true })
