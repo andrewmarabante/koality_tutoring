@@ -62,7 +62,6 @@ export default function PlansPricing() {
         })
             .then(result => result.json())
             .then(data => {
-                console.log(data)
                 setCurrentUser(data)
             })
             .catch(err => console.log(err))

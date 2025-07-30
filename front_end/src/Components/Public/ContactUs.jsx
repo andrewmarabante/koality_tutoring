@@ -6,7 +6,6 @@ export default function ContactUs(){
         <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl md:w-3/4 h-fit md:py-5 lg:w-1/2 xl:w-1/3">
           <div className=" p-5 h-fit overflow-auto">
           <motion.div
-          key='studentSelect'
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
@@ -17,7 +16,6 @@ export default function ContactUs(){
               </div>
         </motion.div>
               <motion.div
-          key='studentSelect'
           initial={{ opacity: 0, y: 500 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}

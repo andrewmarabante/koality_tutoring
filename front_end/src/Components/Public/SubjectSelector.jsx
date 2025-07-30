@@ -3,7 +3,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 
-const subjects = ['Math', 'English', 'Biology', ]
+const subjects = import.meta.env.VITE_REGULAR_SUBJECTS.split(',');
+
 
 export default function SubjectSelector({handleSubjectChange}){ 
 

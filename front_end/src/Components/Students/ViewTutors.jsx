@@ -6,13 +6,13 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { v4 } from "uuid";
 
 
-export default function ViewTutors({tutors, subject, openViewTutor}){
+export default function ViewTutors({ tutors, subject, openViewTutor }) {
 
     const [validTutors, setValidTutors] = useState([])
 
     useEffect(() => {
 
-        if(tutors){
+        if (tutors) {
             setValidTutors(tutors.filter(tutor => tutor.subjects.includes(subject)))
         }
 
@@ -20,10 +20,10 @@ export default function ViewTutors({tutors, subject, openViewTutor}){
 
 
 
-    return(
+    return (
         <div className="p-2 w-full">
             {validTutors.map(tutor => {
-                return(
+                return (
                     <div className="flex justify-between w-full border border-gray-300 shadow-lg rounded-2xl p-2 bg-white" key={v4()}>
                         <div className="w-full flex flex-col">
                             <div className="w-full flex border-b border-gray-300 pb-2 mb-2">
@@ -34,9 +34,9 @@ export default function ViewTutors({tutors, subject, openViewTutor}){
                                         <div className="font-roboto-title-italic text-xs">{tutor.title}</div>
                                     </div>
                                 </div>
-                                <div className="text-center font-roboto-title">{'$'+tutor.rate + '/hr'}</div>
+                                <div className="text-center font-roboto-title">{'$' + tutor.rate + '/hr'}</div>
                             </div>
-                            <div className="text-xs"><span><FormatQuoteIcon fontSize="small" className="pb-2"/></span>{tutor.topReview}</div>
+                            <div className="text-xs"><span><FormatQuoteIcon fontSize="small" className="pb-2" /></span>{tutor.topReview}</div>
                             <div className="w-full flex justify-between items-center py-1">
                                 <div className="flex gap-1 items-center">
                                     <img src={clock} alt="clock" className="h-5" />
@@ -51,6 +51,11 @@ export default function ViewTutors({tutors, subject, openViewTutor}){
                     </div>
                 )
             })}
+
+            {validTutors.length === 0 && <div className="font-roboto-title-italic text-xs text-center">
+                Unfortunately we have no tutors for this subject right now! <br />
+                If you can tutor this subject please join us!
+            </div>}
         </div>
     )
 }

@@ -441,7 +441,7 @@ export default function StudentProfile({ setSection }) {
                             </div>}
                         <div className="flex justify-betwee items-center flex-col p-2 w-full">
                             <div className="text-lg text-center">Payment Method:</div>
-                            <div className="text-center border-gray-300 border rounded-lg p-1 w-9/12 relative" name="lastName">{userInfo.paymentMethods && userInfo.paymentMethods.length > 0 ?
+                            <div className="text-center border-gray-300 border rounded-lg p-1 w-44 relative">{userInfo.paymentMethods && userInfo.paymentMethods.length > 0 ?
                                 <div>
                                     {userInfo.paymentMethods.map(data => {
                                         let imgSrc = defaultCard;

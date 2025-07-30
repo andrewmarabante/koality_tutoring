@@ -60,7 +60,6 @@ export default function TutorSchedule(){
         })
         .then(result => result.json())
         .then(data => {
-            console.log(data)
             setCurrentSchedules(data)
         })
         .catch(err => console.log(err))

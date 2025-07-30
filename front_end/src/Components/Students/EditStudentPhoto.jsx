@@ -18,6 +18,9 @@ export default function EditStudentPhoto({imgSrc, exitEdit}){
     const circleRef = useRef(null)
 
     useEffect(() => {
+
+        if (!imgSrc?.startsWith('http')) return;
+        
         fetch(imgSrc)
         .then(response => response.blob())
         .then(blob => {

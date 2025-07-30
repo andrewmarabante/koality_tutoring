@@ -69,7 +69,6 @@ export default function SubmitLesson() {
         })
             .then((result) => result.json())
             .then(data => {
-                console.log(data)
                 setTutor(data)
             })
             .catch(err => console.log(err))
