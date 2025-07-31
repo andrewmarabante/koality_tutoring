@@ -27,7 +27,6 @@ const corsOptions = {
   credentials: true, // Allow credentials (e.g., cookies, authorization headers)
 };
 
-
 // Apply CORS middleware before any other routes or middleware
 app.use(cookieParser())
 app.use(express.json({limit: '50mb'}));
@@ -41,10 +40,10 @@ app.use(express.json());
 //session setup
 
 app.use(session({
-  secret: 'your-secret-key', // change this in production
+  secret: process.env.SECRET, // change this in production
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set true only if using HTTPS
+  cookie: { secure: true } // Set true only if using HTTPS
 }));
 
 app.use(passport.initialize());
@@ -76,5 +75,6 @@ app.use(function (err, req, res, next) {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at https://fly.io/apps/back-end-bold-sound-4272:${port}`);
 });
+
