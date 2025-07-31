@@ -4,10 +4,11 @@ const passport = require('passport');
 const nodemailer = require('nodemailer');
 const GoogleStrategy = require('passport-google-oauth20')
 
+
 passport.use(
   new GoogleStrategy({
 
-    callbackURL: '/login/google/redirect',
+    callbackURL: 'https://www.koalitytutoring.com/login/google/redirect',
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
 

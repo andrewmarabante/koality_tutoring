@@ -137,7 +137,7 @@ export default function Login() {
                     </form>
                     {tutorLogin && <div className="text-blue-700 p-1" onClick={handleChange}>Login as a Student</div>}
                     {!tutorLogin && <div className="text-blue-700 p-1 font-roboto-title-italic" onClick={handleChange}>Login as a Tutor</div>}
-                    <form action={`http://localhost:3000/login/google/${tutorLogin ? 'tutor' : 'student'}`} method="GET" className="w-5/6 border-t flex justify-center">
+                    <form action={import.meta.env.VITE_SERVER +`login/google/${tutorLogin ? 'tutor' : 'student'}`} method="GET" className="w-5/6 border-t flex justify-center">
                         <button type="submit" className="flex items-center justify-center h-10 bg-white border border-green-300 rounded-xl pl-4 pr-4 m-2 mb-5 text-xs">
                             <img src={Google} className="h-7" alt="" />
                             <span className="px-2 font-roboto">Sign in with google</span>
