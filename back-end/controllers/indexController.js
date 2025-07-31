@@ -399,7 +399,7 @@ function logoutTutor(req, res) {
 
     res.clearCookie('tutorjwt', {
         httpOnly: true,
-        sameSite: 'Lax',
+        sameSite: 'None',
         secure: true,
         path: '/',
     });
@@ -411,7 +411,7 @@ function logoutStudent(req, res) {
 
     res.clearCookie('studentjwt', {
         httpOnly: true,
-        sameSite: 'Lax',
+        sameSite: 'None',
         secure: true,
         path: '/',
     });

@@ -7,7 +7,7 @@ const GoogleStrategy = require('passport-google-oauth20')
 passport.use(
   new GoogleStrategy({
 
-    callbackURL: '/login/google/redirect',
+    callbackURL: 'https://back-end-bold-sound-4272.fly.dev/login/google/redirect',
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
 

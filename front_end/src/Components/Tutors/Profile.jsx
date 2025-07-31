@@ -7,10 +7,10 @@ import { CircularProgress } from "@mui/material";
 import validator from 'validator';
 import AnimatedCheckmark from "../Animations/Checkmark"
 import SubjectSelector from "./SubjectSelector"
-import {v4} from 'uuid'
+import { v4 } from 'uuid'
 
 
-export default function Profile(){
+export default function Profile() {
 
     const server = import.meta.env.VITE_SERVER + 'tutor'
     const [userInfo, setUserInfo] = useState({})
@@ -23,7 +23,7 @@ export default function Profile(){
 
     useEffect(() => {
 
-        fetch( server + '/profile',{
+        fetch(server + '/profile', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,18 +32,24 @@ export default function Profile(){
             },
             credentials: 'include'
         })
-        .then(result => result.json())
-        .then(data => {
-            setUserInfo(data)
-        })
-        .catch(err => console.log(err))
+            .then(result => {
+                if (result.status === 403) {
+                    window.location.href = '/';
+                    return;
+                }
+                result.json()
+            })
+            .then(data => {
+                setUserInfo(data)
+            })
+            .catch(err => console.log(err))
 
     }, [])
 
-    function handleEmailSend(){
+    function handleEmailSend() {
         setSent(true)
 
-        fetch( server + '/emailVerification',{
+        fetch(server + '/emailVerification', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,19 +58,19 @@ export default function Profile(){
             },
             credentials: 'include'
         })
-        .then(result => result.json())
-        .then(data => {
-            console.log(data)
-        })
-        .catch(err => console.log(err))
-        
+            .then(result => result.json())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(err => console.log(err))
+
     }
 
-    function exitEdit(){
+    function exitEdit() {
         setEdit(false)
     }
 
-    function handleSubmit(e){
+    function handleSubmit(e) {
         e.preventDefault()
 
         const firstName = e.target.firstName.value
@@ -77,10 +83,10 @@ export default function Profile(){
 
         let sanitizedEmail
 
-        if(email !== ''){
+        if (email !== '') {
             sanitizedEmail = sanitizeEmail(email)
 
-            if (sanitizedEmail === 'Invalid email address'){
+            if (sanitizedEmail === 'Invalid email address') {
                 setMessage(sanitizedEmail)
                 return
             }
@@ -102,7 +108,7 @@ export default function Profile(){
         setLoading(true)
 
 
-        fetch( server + '/updateProfile',{
+        fetch(server + '/updateProfile', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,32 +118,32 @@ export default function Profile(){
             body: JSON.stringify(data),
             credentials: 'include'
         })
-        .then(result => result.json())
-        .then(data => {
-            if(data === 'updated'){
-                setPosted(true)
-                setTimeout(()=>setLoading(false), 1000)
-            }
-        })
-        .catch(err => console.log(err))
+            .then(result => result.json())
+            .then(data => {
+                if (data === 'updated') {
+                    setPosted(true)
+                    setTimeout(() => setLoading(false), 1000)
+                }
+            })
+            .catch(err => console.log(err))
 
     }
 
     function sanitizeEmail(input) {
-            const trimmedInput = input.trim();
-            const lowerCasedInput = trimmedInput.toLowerCase();
-          
-            if (validator.isEmail(lowerCasedInput)) {
-              return lowerCasedInput;
-            } else {
-              return 'Invalid email address'
-            }
+        const trimmedInput = input.trim();
+        const lowerCasedInput = trimmedInput.toLowerCase();
+
+        if (validator.isEmail(lowerCasedInput)) {
+            return lowerCasedInput;
+        } else {
+            return 'Invalid email address'
         }
+    }
 
 
-    function handleSubjectAdd(newSub){
+    function handleSubjectAdd(newSub) {
 
-        if(userInfo.subjects.includes(newSub)){
+        if (userInfo.subjects.includes(newSub)) {
             return
         }
 
@@ -147,20 +153,20 @@ export default function Profile(){
         }))
     }
 
-    function handleSubjectRemove(oldSub){
+    function handleSubjectRemove(oldSub) {
         setUserInfo(prev => ({
             ...prev,
             subjects: prev.subjects.filter(subject => subject !== oldSub)
         }));
     }
 
-    return(
+    return (
         <form className="flex justify-start items-center h-11/12 w-10/12 overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2" onSubmit={handleSubmit}>
             {!edit ? <div className="flex flex-col items-center w-full">
                 <div className="font-roboto text-4xl p-2 border-b text-center px-10 mb-2">Profile</div>
                 <div className="relative p-5">
                     <img src={userInfo.photo} alt="" className="rounded-full h-24" />
-                    <img src={editImg} alt="edit" className="h-5 absolute bottom-2 right-0" onClick={() => setEdit(true)}/>
+                    <img src={editImg} alt="edit" className="h-5 absolute bottom-2 right-0" onClick={() => setEdit(true)} />
                 </div>
                 <div className="flex justify-between flex-col p-2">
                     <div className="text-lg text-center">First Name:</div>
@@ -168,15 +174,15 @@ export default function Profile(){
                 </div>
                 <div className="flex justify-between flex-col p-2">
                     <div className="text-lg text-center">Last Name:</div>
-                    <input type="text" placeholder={userInfo.lastName} className="text-center border-gray-300 border rounded-lg p-1" name="lastName"/>
+                    <input type="text" placeholder={userInfo.lastName} className="text-center border-gray-300 border rounded-lg p-1" name="lastName" />
                 </div>
                 <div className="flex justify-between flex-col p-2 items-center">
                     <div className="text-lg text-center">Email:</div>
                     <div className="flex items-center gap-2 relative">
                         <input type="text" placeholder={userInfo.email} className={`text-center border-gray-300 ${!userInfo.verified && 'border-red-300'} border rounded-lg p-1`} name="email" />
-                        {!userInfo.verified ? <img src={x} alt="x" className="absolute -right-6 h-5 bg-red-200 rounded-lg"/>: <img src={check} alt="checkmark" className="absolute -right-6 h-5 bg-green-200 rounded-lg"/>}
+                        {!userInfo.verified ? <img src={x} alt="x" className="absolute -right-6 h-5 bg-red-200 rounded-lg" /> : <img src={check} alt="checkmark" className="absolute -right-6 h-5 bg-green-200 rounded-lg" />}
                     </div>
-                    {!userInfo.verified ? <div className="text-red-300  text-xs text-center p-1">You email has not been verified</div>: <div className="text-green-300  text-xs text-center p-1">Verified</div>}
+                    {!userInfo.verified ? <div className="text-red-300  text-xs text-center p-1">You email has not been verified</div> : <div className="text-green-300  text-xs text-center p-1">Verified</div>}
                     <div className="flex">
                         {sent && <div class Name="text-xs font-roboto-title-italic p-1">Email sent</div>}
                         {!userInfo.verified && <button className="text-xs border-blue-200 border w-fit rounded-lg py-1 px-2" type="button" onClick={handleEmailSend}>{!sent ? 'Send Link' : 'Resend'}</button>}
@@ -184,7 +190,7 @@ export default function Profile(){
                 </div>
                 <div className="flex justify-between flex-col p-2">
                     <div className="text-lg text-center">Rate:</div>
-                    <input type="number" placeholder={userInfo.rate} className="text-center border-gray-300 border rounded-lg p-1" name="rate"/>
+                    <input type="number" placeholder={userInfo.rate} className="text-center border-gray-300 border rounded-lg p-1" name="rate" />
                 </div>
 
 
@@ -192,43 +198,43 @@ export default function Profile(){
                 <div className="flex items-center flex-col p-2 text-xs w-full">
                     <div className="text-lg text-center border-b mb-2">Subjects:</div>
                     {userInfo.subjects && userInfo.subjects.length > 0 ? <div className={`${userInfo.subjects.length > 1 && 'grid grid-cols-2'} ${userInfo.subjects.length > 2 && 'grid grid-cols-3 gap-2 py-3'} w-9/12 text-center p-2 my-2 mb-5 border rounded-xl border-gray-300`}>{userInfo.subjects.map(subject => <div key={v4()} onClick={() => handleSubjectRemove(subject)}>{subject}</div>)}</div>
-                    :<div className="text-base text-center border rounded-xl p-1 w-9/12 border-gray-300 px-5">None</div>}
+                        : <div className="text-base text-center border rounded-xl p-1 w-9/12 border-gray-300 px-5">None</div>}
                     <div className="w-9/12 flex flex-col justify-start items-center">
                         <div className="p-1">Add Subjects:</div>
-                        <SubjectSelector handleSubjectAdd={handleSubjectAdd}/>
+                        <SubjectSelector handleSubjectAdd={handleSubjectAdd} />
                     </div>
                 </div>
 
                 <div className="flex items-center flex-col p-2 w-full">
                     <div className="text-lg text-center">Title:</div>
-                    <textarea type="text" placeholder={userInfo.title ? userInfo.title : 'Patient Math Tutor with 5+ years of experience'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="title"/>
+                    <textarea type="text" placeholder={userInfo.title ? userInfo.title : 'Patient Math Tutor with 5+ years of experience'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="title" />
                 </div>
 
                 <div className="flex items-center flex-col p-2 w-full">
                     <div className="text-lg text-center">Education:</div>
-                    <textarea type="text" placeholder={userInfo.education ? userInfo.education : 'Enter Education'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="education"/>
+                    <textarea type="text" placeholder={userInfo.education ? userInfo.education : 'Enter Education'} className="text-center border-gray-300 border rounded-lg p-1 w-9/12" name="education" />
                 </div>
-                
+
                 <div className="flex justify-between flex-col p-2 w-9/12">
                     <div className="text-lg text-center">Bio:</div>
                     <textarea type="text" placeholder={userInfo.bio === 'default' ?
                         'Create a bio! This is what students will read before choosing you as their tutor, so keep it short and sweet!'
                         : userInfo.bio
-                        } className="text-center border-gray-300 border rounded-lg p-2 min-h-36 text-xs" 
+                    } className="text-center border-gray-300 border rounded-lg p-2 min-h-36 text-xs"
                         name="bio"
-                        />
+                    />
                 </div>
 
 
                 <div className={`mt-3 flex gap-5 items-center ${!userInfo.interviewed ? 'border-red-300' : 'border-green-300'} border rounded-lg p-1 px-3`}>
                     <div className="text-sm text-center">Interviewed:</div>
-                    {!userInfo.interviewed ? <img src={x} alt="x" className="h-5 bg-red-200 rounded-lg"/> : <img src={check} alt="checkmark" className="h-5 bg-green-200 rounded-lg"/>}
+                    {!userInfo.interviewed ? <img src={x} alt="x" className="h-5 bg-red-200 rounded-lg" /> : <img src={check} alt="checkmark" className="h-5 bg-green-200 rounded-lg" />}
                 </div>
                 {!userInfo.interviewed && <div className="text-xs w-9/12 text-center p-2 font-roboto-title-italic">-You need to complete a quick discord interview! Go to messages and message the Bossman!</div>}
 
                 <div className={`flex items-center justify-center py-3`}>
                     <button className="text-lg p-2 rounded-lg px-5 border-gray-300 border" type="submit">Update</button>
-                    {loading && <CircularProgress size={40} className="ml-2"/>}
+                    {loading && <CircularProgress size={40} className="ml-2" />}
                     {!loading && posted && <div className="h-8">
                         <AnimatedCheckmark />
                     </div>}
@@ -236,13 +242,13 @@ export default function Profile(){
                 {message && <div className="text-red-300 text-xs">{message}</div>}
                 <div></div>
             </div> :
-            
-            <EditPhoto 
-                imgSrc={userInfo.photo}
-                exitEdit={exitEdit}
-            />
+
+                <EditPhoto
+                    imgSrc={userInfo.photo}
+                    exitEdit={exitEdit}
+                />
             }
-            
+
         </form>
     )
 }

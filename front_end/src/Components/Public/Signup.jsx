@@ -107,7 +107,7 @@ export default function Signup({ changeSection }) {
             {tutorLogin ? "Sign up as a Student" : "Sign up as a Tutor"}
           </div>
 
-          <form action={`http://localhost:3000/login/google/${tutorLogin ? 'tutor' : 'student'}`} method="GET" className="w-5/6 border-t flex justify-center">
+          <form action={import.meta.env.VITE_SERVER +`login/google/${tutorLogin ? 'tutor' : 'student'}`} method="GET" className="w-5/6 border-t flex justify-center">
             <button type="submit" className="flex items-center justify-center h-10 bg-white border border-green-300 rounded-xl pl-4 pr-4 m-2 mb-5 text-xs">
               <img src={Google} className="h-7" alt="" />
               <span className="px-2 font-roboto">Sign up with google</span>

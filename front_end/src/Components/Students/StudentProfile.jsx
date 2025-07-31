@@ -68,7 +68,13 @@ export default function StudentProfile({ setSection }) {
             },
             credentials: 'include'
         })
-            .then(result => result.json())
+            .then(result => {
+                if (result.status === 403) {
+                    window.location.href = '/';
+                    return;
+                }
+                result.json()
+            })
             .then(data => {
                 setUserInfo(data)
             })
