@@ -4,11 +4,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css'
 
 
-import Home from './Components/Home.jsx'
+import Home from './Components/Public/Home.jsx'
 import Error from './Components/Error.jsx'
-import Bigman from './Components/Bigman.jsx'
-import Login from './Components/Login.jsx'
-import Navbar from'./Components/Navbar.jsx'
+import Bigman from './Components/Bigman/Bigman.jsx'
+import BigmanLogin from './Components/Public/BigmanLogin.jsx';
+
+
+import TutorHome from'./Components/Tutors/TutorHome.jsx'
+import StudentHome from'./Components/Students/StudentHome.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -17,14 +21,24 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/bigmanlogin",
+    element: <BigmanLogin />,
     errorElement: <Error />
   },
   {
     path: "/bigman",
     element: <Bigman />,
     errorElement: <Error />
+  },
+  {
+    path: '/tutor',
+    element: <TutorHome />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/student',
+    element: <StudentHome />,
+    errorElement: <Error />,
   },
 ]);
 
