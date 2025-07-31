@@ -1,12 +1,18 @@
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 var cors = require('cors');
 const app = express();
 const port = 3000;
 
 var indexRouter = require('./routes/index');
 var bigmanRouter = require('./routes/bigman');
+var signupRouter = require('./routes/signup')
+var loginRouter = require('./routes/login')
+var tutorRouter = require('./routes/tutor')
+var studentRouter = require('./routes/student')
 
 const mongoose = require('mongoose');
 
@@ -15,22 +21,42 @@ mongoose.connect(process.env.uri)
 .catch(err => console.log(err))
 
 // Define allowed origins for CORS
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const allowedOrigins = ['https://www.koalitytutoring.com', 'http://localhost:5173'];
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true, // Allow credentials (e.g., cookies, authorization headers)
 };
 
+
 // Apply CORS middleware before any other routes or middleware
 app.use(cookieParser())
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ extended: true , limit: '50mb'}))
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Middleware to parse JSON requests
 app.use(express.json());
 
+//session setup
+
+app.use(session({
+  secret: 'your-secret-key', // change this in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set true only if using HTTPS
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routes
 app.use('/', indexRouter);
 app.use('/bigman', bigmanRouter);
+app.use('/signup', signupRouter);
+app.use('/login', loginRouter);
+app.use('/tutor', tutorRouter);
+app.use('/student', studentRouter);
 
 // Error handling for unknown routes (404)
 app.use(function (req, res, next) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 
-export default function Login(){
+export default function BigmanLogin(){
 
     const navigate = useNavigate();
 
