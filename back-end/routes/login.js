@@ -13,12 +13,13 @@ router.post('/student', indexControllers.studentLogin)
 
 router.get('/google/redirect', auth.passport.authenticate('google', { session: false }), indexControllers.googleLogin)
 
-router.get('/google/:role', (req,res,next) => {
-    req.session.role = req.params.role
-    next()
-}, auth.passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
+router.get('/google/:role', (req, res, next) => {
+  const role = req.params.role;
+  auth.passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    state: role,
+  })(req, res, next);
+});
 
 
 

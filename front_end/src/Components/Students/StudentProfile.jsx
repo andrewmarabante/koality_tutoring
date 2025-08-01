@@ -69,11 +69,11 @@ export default function StudentProfile({ setSection }) {
             credentials: 'include'
         })
             .then(result => {
-                if (result.status === 403) {
+                if (result.status === 401 || result.status === 403){
                     window.location.href = '/';
-                    return;
+                    return result.json();
                 }
-                result.json()
+                return result.json()
             })
             .then(data => {
                 setUserInfo(data)

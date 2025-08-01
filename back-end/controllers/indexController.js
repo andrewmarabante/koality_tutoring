@@ -260,13 +260,14 @@ function reportBug(req, res) {
 
 async function googleLogin(req, res) {
 
-    const role = req.session.role
+    const role = req.query.state;
     const user = req.user._json
 
     if (role === 'student') {
         Student.find({ email: user.email })
             .then(result => {
                 if (result.length === 0) {
+
                     const userData = {
                         first_name: user.given_name,
                         last_name: user.family_name,
