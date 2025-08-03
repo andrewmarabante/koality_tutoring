@@ -182,7 +182,7 @@ export default function Navbar({ section, changeSection }) {
           <motion.img
             src={airplane}
             alt="airplane"
-            className="h-7 fixed top-5 z-10"
+            className="h-7 absolute top-5 z-10"
             initial={{ x: '-25vw' }} // start completely offscreen to the left
             animate={{ x: '100vw' }} // go fully offscreen to the right
             transition={{
