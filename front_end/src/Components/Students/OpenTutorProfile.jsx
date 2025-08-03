@@ -58,46 +58,49 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
 
     }
 
-    return(
-        <div className="w-full h-full flex flex-col overflow-scroll">
-            <div className="flex p-2 gap-2 items-center">
-                <img src={tutor.photo} alt="Photo" className="rounded-full h-32 border border-gray-300"/>
+    return (
+        <div className="w-full h-full flex flex-col min-h-0">
+            <div className="flex p-2 gap-2 items-start">
+                <img src={tutor.photo} alt="Photo" className="rounded-full h-32 border border-gray-300" />
                 <div className="flex flex-col">
                     <div className="text-lg font-roboto-title">{tutor.first_name + ' ' + tutor.last_name.charAt(0) + '.'}</div>
                     <div className="">{tutor.title}</div>
                 </div>
             </div>
             <div className="flex items-center justify-between gap-2 px-5 pb-1">
-                    <div className='flex gap-1 items-center font-roboto-title'><img src={fivestar} alt="" className='h-4'/>{tutor.rating.toFixed(1)}</div>
-                    {!showMessage && <div onClick={toggleReviews} className='text-blue-500'>{!showReviews ? '(' + tutor.reviews.length + ' reviews)' : <div className='flex items-center gap-1'>Close <img src={up} alt="up" className='h-5'/></div>}</div>}
+                {tutor.rating ? <div className='flex gap-1 items-center font-roboto-title'><img src={fivestar} alt="" className='h-4' />{tutor.rating.toFixed(1)}</div> : <div className='font-roboto-title-italic text-sm text-gray-500 px-2'>No Rating</div>}
+                {!showMessage && <div onClick={toggleReviews} className='text-blue-500'>{!showReviews ? '(' + tutor.reviews.length + ' reviews)' : <div className='flex items-center gap-1'>Close <img src={up} alt="up" className='h-5' /></div>}</div>}
             </div>
 
             {!showReviews && !showMessage && <div className="border-gray-300 border-t mx-5"></div>}
 
-            <div>
+            <div className='h-full'>
                 <div className={`relative h-full ${showReviews && 'overflow-hidden'}`}>
-                <motion.div
-                    initial={{ y: "100%", opacity: 0, height: 0 }}
-                    animate={{ y: showReviews ? 0 : "100%", opacity: showReviews ? 1 : 0, height: showReviews ?  "100%" : 0}}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute top-0 left-0 w-full h-full bg-white shadow-lg p-5 overflow-scroll"
-                >
-                    <div className="font-roboto-title text-lg">Reviews</div>
-                    <div className='p-3'>{tutor.reviews.map(review => {
-                        return(
-                            <div className='flex flex-col my-2 mb-16' key={v4()}>
-                                <div>{'"' + review.body + '"'}</div>
-                                <div className='flex justify-between items-center'>
-                                    <div className='text-lg font-roboto'>{'-' + review.creator}</div>
-                                    <div className='flex gap-1 items-center'>
-                                        {review.rating && <img src={fivestar} alt="" className='h-3'/>}
-                                        <div className='font-roboto-title-italic'>{review.rating ? review.rating.toFixed(1) : 'No Rating'}</div>
+                    <motion.div
+                        initial={{ y: "100%", opacity: 0, height: 0 }}
+                        animate={{ y: showReviews ? 0 : "100%", opacity: showReviews ? 1 : 0, height: showReviews ? "100%" : 0 }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        className="absolute top-0 left-0 w-full h-full bg-white shadow-lg p-5 overflow-scroll"
+                    >
+                        <div className="font-roboto-title text-lg">Reviews</div>
+                        <div className='p-3'>{tutor.reviews && tutor.reviews.map(review => {
+                            return (
+                                <div className='flex flex-col my-2 mb-16' key={v4()}>
+                                    <div>{'"' + review.body + '"'}</div>
+                                    <div className='flex justify-between items-center'>
+                                        <div className='text-lg font-roboto'>{'-' + review.creator}</div>
+                                        <div className='flex gap-1 items-center'>
+                                            {review.rating && <img src={fivestar} alt="" className='h-3' />}
+                                            <div className='font-roboto-title-italic'>{review.rating ? review.rating.toFixed(1) : 'No Rating'}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    })}</div>
-                </motion.div>
+                            )
+                        })}
+                            {!tutor.reviews || tutor.reviews.length === 0 && <div className='w-full text-center font-roboto-title-italic'>This tutor has no reviews</div>}
+                        </div>
+
+                    </motion.div>
                 <motion.div
                     initial={{ y: "100%", opacity: 0, height: 0 }}
                     animate={{ y: showMessage ? 0 : "100%", opacity: showMessage ? 1 : 0, height: showMessage ?  "100%" : 0}}

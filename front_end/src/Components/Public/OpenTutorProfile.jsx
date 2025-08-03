@@ -28,8 +28,8 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
 
 
     return (
-        <div className="w-full h-full flex flex-col overflow-scroll">
-            <div className="flex p-2 gap-2 items-center">
+        <div className="w-full h-full flex flex-col min-h-0">
+            <div className="flex p-2 gap-2 items-start">
                 <img src={tutor.photo} alt="Photo" className="rounded-full h-32 border border-gray-300" />
                 <div className="flex flex-col">
                     <div className="text-lg font-roboto-title">{tutor.first_name + ' ' + tutor.last_name.charAt(0) + '.'}</div>
@@ -37,13 +37,13 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                 </div>
             </div>
             <div className="flex items-center justify-between gap-2 px-5 pb-1">
-                <div className='flex gap-1 items-center font-roboto-title'><img src={fivestar} alt="" className='h-4' />{tutor.rating.toFixed(1)}</div>
+                {tutor.rating ? <div className='flex gap-1 items-center font-roboto-title'><img src={fivestar} alt="" className='h-4' />{tutor.rating.toFixed(1)}</div> : <div className='font-roboto-title-italic text-sm text-gray-500 px-2'>No Rating</div>}
                 {!showMessage && <div onClick={toggleReviews} className='text-blue-500'>{!showReviews ? '(' + tutor.reviews.length + ' reviews)' : <div className='flex items-center gap-1'>Close <img src={up} alt="up" className='h-5' /></div>}</div>}
             </div>
 
             {!showReviews && !showMessage && <div className="border-gray-300 border-t mx-5"></div>}
 
-            <div>
+            <div className='h-full'>
                 <div className={`relative h-full ${showReviews && 'overflow-hidden'}`}>
                     <motion.div
                         initial={{ y: "100%", opacity: 0, height: 0 }}
@@ -52,7 +52,7 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                         className="absolute top-0 left-0 w-full h-full bg-white shadow-lg p-5 overflow-scroll"
                     >
                         <div className="font-roboto-title text-lg">Reviews</div>
-                        <div className='p-3'>{tutor.reviews.map(review => {
+                        <div className='p-3'>{tutor.reviews && tutor.reviews.map(review => {
                             return (
                                 <div className='flex flex-col my-2 mb-16' key={v4()}>
                                     <div>{'"' + review.body + '"'}</div>
@@ -65,7 +65,10 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                                     </div>
                                 </div>
                             )
-                        })}</div>
+                        })}
+                            {!tutor.reviews || tutor.reviews.length === 0 && <div className='w-full text-center font-roboto-title-italic'>This tutor has no reviews</div>}
+                        </div>
+
                     </motion.div>
                     <motion.div
                         initial={{ y: "100%", opacity: 0, height: 0 }}
@@ -84,13 +87,13 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                                 {showMessage && <motion.div
                                     initial={{ y: -100, opacity: 0 }}
                                     animate={{ y: 0, opacity: .95 }}
-                                    exit={{ y: -100, opacity: 0, transition: {delay: 0} }}
+                                    exit={{ y: -100, opacity: 0, transition: { delay: 0 } }}
                                     transition={{ duration: 1, ease: "easeOut", delay: 1 }}
-                                    className='absolute top-0 left-0 w-full h-full bg-gray-600 z-50 flex items-center justify-center'  
+                                    className='absolute top-0 left-0 w-full h-full bg-gray-600 z-50 flex items-center justify-center'
                                 >
                                     <div className='flex flex-col gap-5'>
                                         <div className='text-white font-roboto-title text-2xl'>
-                                             Please sign in to message!
+                                            Please sign in to message!
                                         </div>
                                         <Button type='submit' variant='contained' onClick={() => setSection('Join The Community')}>Create Account</Button>
                                         <Button type='submit' variant='contained' color='secondary' onClick={() => setSection('Login')}>Login</Button>
@@ -125,7 +128,7 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                     <div className='flex justify-between items-center px-5'>
                         <div className='flex items-center text-sm py-2'>
                             <img src={clock} alt="clock" className='h-5 pr-1' />
-                            <div>{tutor.hours + ' hours tutored'}</div>
+                            <div>{tutor.hours ? tutor.hours : '0' + ' hours tutored'}</div>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                             <div className="font-roboto">Rate:</div>

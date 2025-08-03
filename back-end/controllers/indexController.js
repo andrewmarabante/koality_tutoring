@@ -72,6 +72,7 @@ function tutorSignup(req, res) {
                             last_message: message,
                             last_message_date: new Date()
                         }
+
                         const newChat = new Chat(chatData)
 
                         newChat.save()
@@ -83,6 +84,7 @@ function tutorSignup(req, res) {
                                     chatId: chatId,
                                     body: message,
                                 }
+
 
                                 const newMessage = new Message(messageData)
 

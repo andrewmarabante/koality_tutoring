@@ -67,6 +67,7 @@ export default function Signup({ changeSection }) {
     })
       .then(res => res.json())
       .then(data => {
+        console.log(data)
         if (data === 'email taken'){setMessage('Email Already Taken')}
         else if (data === 'success'){ changeSection('Login')}
         else{setMessage('An Error Occurred')}

@@ -8,7 +8,7 @@ const GoogleStrategy = require('passport-google-oauth20')
 passport.use(
   new GoogleStrategy({
     
-    callbackURL: 'https://back-end-bold-sound-4272.fly.dev/login/google/redirect',
+    callbackURL: 'https://api.koalitytutoring.com/login/google/redirect',
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
 
