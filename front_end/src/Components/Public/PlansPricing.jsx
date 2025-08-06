@@ -59,9 +59,9 @@ export default function PlansPricing({setSection}) {
 
 
     return (
-        <div className="h-full relative flex justify-center items-center z-40 w-full my-5 px-3">
-            <div className="flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2">
-                {!showSubmitPlan ? <div className="flex justify-start items-center h-full w-full overflow-scroll flex-col rounded-3xl">
+        <div className="h-full relative flex justify-center items-center z-40 w-full my-5 px-3 min-h-0">
+            <div className="min-h-0 flex justify-start items-center h-full w-full overflow-scroll flex-col bg-[rgba(255,255,255,0.75)] rounded-3xl shadow-lg font-roboto py-2">
+                {!showSubmitPlan ? <div className="min-h-0 flex justify-start items-center h-full w-full overflow-scroll flex-col rounded-3xl">
                     <AnimatePresence>
                         <motion.div
                             key="messages"
