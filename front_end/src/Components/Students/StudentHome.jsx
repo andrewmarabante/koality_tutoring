@@ -50,7 +50,7 @@ export default function StudentHome() {
                 <div className="absolute top-0 left-0 h-screen w-screen bg-[url('/assets/blueSkyVerticalBackground.svg')] lg:bg-[url('/assets/blueSkyHorizontalBackground.svg')] bg-cover z-0"></div>
                 <div className='grow z-50 flex justify-center items-center overflow-hidden w-screen relative'>
                     {section === 'Profile' && <StudentProfile setSection={setSection} />}
-                    {section === 'Find Tutor' && <FindTutor />}
+                    {section === 'Find Tutor' && <FindTutor setSection = {setSection}/>}
                     {section === 'Study' && <Study />}
                     {section === 'Messages' && <Chats />}
                     {section === 'Plans / Pricing' && <PlansPricing />}

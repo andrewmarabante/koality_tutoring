@@ -9,28 +9,28 @@ import { useState } from 'react'
 import { motion, reverseEasing } from 'framer-motion'
 import { v4 } from 'uuid'
 
-export default function OpenTutorProfile({tutor, closeViewTutor}){
+export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) {
 
     const [showReviews, setShowReviews] = useState(false)
     const [showMessage, setShowMessage] = useState(false)
     const [messageAlert, setMessageAlert] = useState('')
-    
+
     const server = import.meta.env.VITE_SERVER + 'student'
 
-    function toggleReviews(){
-        if(showReviews){
+    function toggleReviews() {
+        if (showReviews) {
             setShowReviews(false)
-        }else{
+        } else {
             setShowReviews(true)
         }
     }
 
-    function handleSubmit(e){
+    function handleSubmit(e) {
         e.preventDefault()
 
-        if(e.target.message.value.length <= 75){
+        if (e.target.message.value.length <= 75) {
             setMessageAlert('Message must be at least 75 characters')
-            return 
+            return
         }
 
         const data = {
@@ -45,22 +45,30 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
             credentials: 'include'
-          })
-          .then(result  => result.json())
-          .then(data => {
-            console.log(data)
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        })
+            .then(result => result.json())
+            .then(data => {
+                if (data === 'success') {
+                    setSection('Messages')
+                } else if (data === 'Already Have Request') {
+                    setMessageAlert('You have already messaged this tutor!')
+                }
+                else {
+                    setMessageAlert('Something went wrong!')
 
-        
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
 
     }
 
     return (
-        <div className="w-full h-full flex flex-col min-h-0">
-            <div className="flex p-2 gap-2 items-start">
+        <div className="w-full h-full flex flex-col overflow-scroll min-h-0">
+            <div className="flex p-2 gap-2 items-center">
                 <img src={tutor.photo} alt="Photo" className="rounded-full h-32 border border-gray-300" />
                 <div className="flex flex-col">
                     <div className="text-lg font-roboto-title">{tutor.first_name + ' ' + tutor.last_name.charAt(0) + '.'}</div>
@@ -75,7 +83,7 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
             {!showReviews && !showMessage && <div className="border-gray-300 border-t mx-5"></div>}
 
             <div className='h-full'>
-                <div className={`relative h-full ${showReviews && 'overflow-hidden'}`}>
+                <div className={`relative h-full flex flex-col min-h-0 ${showReviews && 'overflow-hidden'}`}>
                     <motion.div
                         initial={{ y: "100%", opacity: 0, height: 0 }}
                         animate={{ y: showReviews ? 0 : "100%", opacity: showReviews ? 1 : 0, height: showReviews ? "100%" : 0 }}
@@ -83,7 +91,7 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
                         className="absolute top-0 left-0 w-full h-full bg-white shadow-lg p-5 overflow-scroll"
                     >
                         <div className="font-roboto-title text-lg">Reviews</div>
-                        <div className='p-3'>{tutor.reviews && tutor.reviews.map(review => {
+                        <div className='p-3'>{tutor.reviews.map(review => {
                             return (
                                 <div className='flex flex-col my-2 mb-16' key={v4()}>
                                     <div>{'"' + review.body + '"'}</div>
@@ -91,25 +99,24 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
                                         <div className='text-lg font-roboto'>{'-' + review.creator}</div>
                                         <div className='flex gap-1 items-center'>
                                             {review.rating && <img src={fivestar} alt="" className='h-3' />}
+                                            {!tutor.reviews || tutor.reviews.length === 0 && <div className='w-full text-center font-roboto-title-italic'>This tutor has no reviews</div>}
+
                                             <div className='font-roboto-title-italic'>{review.rating ? review.rating.toFixed(1) : 'No Rating'}</div>
                                         </div>
                                     </div>
                                 </div>
                             )
-                        })}
-                            {!tutor.reviews || tutor.reviews.length === 0 && <div className='w-full text-center font-roboto-title-italic'>This tutor has no reviews</div>}
-                        </div>
-
+                        })}</div>
                     </motion.div>
-                <motion.div
-                    initial={{ y: "100%", opacity: 0, height: 0 }}
-                    animate={{ y: showMessage ? 0 : "100%", opacity: showMessage ? 1 : 0, height: showMessage ?  "100%" : 0}}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute top-0 left-0 w-full h-full bg-white shadow-lg overflow-scroll flex flex-col"
-                >
+                    <motion.div
+                        initial={{ y: "100%", opacity: 0, height: 0 }}
+                        animate={{ y: showMessage ? 0 : "100%", opacity: showMessage ? 1 : 0, height: showMessage ? "100%" : 0 }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        className="absolute top-0 left-0 w-full h-full bg-white shadow-lg overflow-scroll flex flex-col"
+                    >
                         <div className='w-full flex justify-between bg-gray-200 py-3 p-1 shadow-md'>
                             <div className='flex items-center'>
-                                <img src={backArrow} alt="" className='h-5'/>
+                                <img src={backArrow} alt="" className='h-5' />
                                 <div onClick={() => setShowMessage(false)}>Go Back</div>
                             </div>
                         </div>
@@ -136,40 +143,43 @@ export default function OpenTutorProfile({tutor, closeViewTutor}){
                                 </select>
                             </div>
                             <Button type='submit'>Send Request</Button>
-                        </form>  
-                </motion.div>
-                    <div className='flex justify-between items-center px-5'>
-                        <div className='flex items-center text-sm py-2'>
-                            <img src={clock} alt="clock" className='h-5 pr-1'/>
-                            <div>{tutor.hours +' hours tutored'}</div>
+                        </form>
+                    </motion.div>
+                    <div className='grow overflow-scroll'>
+                        <div className='flex justify-between items-center px-5'>
+                            <div className='flex items-center text-sm py-2'>
+                                <img src={clock} alt="clock" className='h-5 pr-1' />
+                                <div>{(tutor.hours ? tutor.hours : '0') + ' hours tutored'}</div>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="font-roboto">Rate:</div>
+                                <div className="font-roboto-title-italic text-lg">{'$' + tutor.rate + '/hour'}</div>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="font-roboto">Rate:</div>
-                            <div className="font-roboto-title-italic text-lg">{'$' + tutor.rate + '/hour'}</div>
+                        <div className="p-5 pt-0">
+                            <div className="font-roboto-title text-lg">Bio:</div>
+                            <div className="text-sm font-roboto-title-italic">{tutor.bio}</div>
                         </div>
-                    </div>
-                    <div className="p-5 pt-0">
-                        <div className="font-roboto-title text-lg">Bio:</div>
-                        <div className="text-sm font-roboto-title-italic">{tutor.bio}</div>
-                    </div>
-                    <div className="p-5 pt-0">
-                        <div className="font-roboto text-lg">Education:</div>
-                        <div className="text-sm font-roboto-title-italic">{tutor.education}</div>
+                        <div className="p-5 pt-0">
+                            <div className="font-roboto text-lg">Education:</div>
+                            <div className="text-sm font-roboto-title-italic">{tutor.education}</div>
+                        </div>
                     </div>
                     <div className="border-gray-300 border-t mx-5"></div>
+
                     <div className={`flex justify-center ${(showReviews || showMessage) && 'hidden'}`}>
                         <Button size='large' onClick={closeViewTutor} >
                             Back
                         </Button>
                     </div>
                 </div>
-                <div className={`bg-blue-100 rounded-4xl absolute bottom-5 right-5 transition-all duration-500 ease-in-out ${showMessage && 'opacity-0'}` }>
-                        <IconButton onClick={() => setShowMessage(true)} color="primary" aria-label="add to shopping cart" size="large" style={{height: '65px', width:'65px'}}>
-                            <img src={message} alt="message" />
-                        </IconButton>
+                <div className={`bg-blue-100 rounded-4xl absolute bottom-5 right-5 transition-all duration-500 ease-in-out ${showMessage && 'opacity-0'}`}>
+                    <IconButton onClick={() => setShowMessage(true)} color="primary" aria-label="add to shopping cart" size="large" style={{ height: '65px', width: '65px' }}>
+                        <img src={message} alt="message" />
+                    </IconButton>
                 </div>
             </div>
-            
+
 
         </div>
     )

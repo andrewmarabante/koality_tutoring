@@ -285,61 +285,71 @@ function getTutors(req, res) {
         .catch(err => res.status(500).json(err))
 }
 
-function newRequest(req, res) {
+async function newRequest(req, res) {
+
 
     const userId = req.userInfo.userId
 
-    const requestData = {
-        ...req.body,
-        studentId: userId,
-        accepted: false,
+    const oldRequests = await Request.find({ studentId: userId, tutorId: req.body.tutorId })
+
+    if (oldRequests.length === 0) {
+
+        const requestData = {
+            ...req.body,
+            studentId: userId,
+            accepted: false,
+        }
+
+        const newRequest = new Request(requestData)
+
+        newRequest.save()
+            .then(async () => {
+
+                const [tutor, student] = await Promise.all([
+                    Tutor.findById(requestData.tutorId).select('_id first_name last_name photo'),
+                    Student.findById(requestData.studentId).select('_id first_name last_name photo')
+                ]);
+
+                await Tutor.findByIdAndUpdate(requestData.tutorId, { $push: { students: student } }, { runValidators: true })
+
+                const chatData = {
+                    users: [tutor, student],
+                    name: 'default',
+                    last_message: requestData.message,
+                    last_message_date: new Date()
+                }
+
+                const newChat = new Chat(chatData)
+
+                newChat.save()
+                    .then((result) => {
+
+                        const chatId = result._id.toString();
+
+                        const messageData = {
+                            senderId: userId,
+                            chatId: chatId,
+                            body: requestData.message,
+                        }
+
+                        const newMessage = new Message(messageData)
+
+                        newMessage.save()
+                            .then(() => {
+
+                                res.status(200).json('success')
+                            })
+                            .catch(err => res.status(500).json(err))
+                    })
+                    .catch(err => res.status(500).json(err))
+
+            })
+            .catch(err => res.status(500).json(err))
+    } else {
+        res.status(200).json('Already Have Request')
     }
 
-    const newRequest = new Request(requestData)
 
-    newRequest.save()
-        .then(async () => {
-
-            const [tutor, student] = await Promise.all([
-                Tutor.findById(requestData.tutorId).select('_id first_name last_name photo'),
-                Student.findById(requestData.studentId).select('_id first_name last_name photo')
-            ]);
-
-            await Tutor.findByIdAndUpdate(requestData.tutorId, { $push: { students: student } }, { runValidators: true })
-
-            const chatData = {
-                users: [tutor, student],
-                name: 'default',
-                last_message: requestData.message,
-                last_message_date: new Date()
-            }
-
-            const newChat = new Chat(chatData)
-
-            newChat.save()
-                .then((result) => {
-
-                    const chatId = result._id.toString();
-
-                    const messageData = {
-                        senderId: userId,
-                        chatId: chatId,
-                        body: requestData.message,
-                    }
-
-                    const newMessage = new Message(messageData)
-
-                    newMessage.save()
-                        .then(() => {
-
-                            res.status(200).json('success')
-                        })
-                        .catch(err => res.status(500).json(err))
-                })
-                .catch(err => res.status(500).json(err))
-
-        })
-        .catch(err => res.status(500).json(err))
 }
 
 function getChats(req, res) {
@@ -466,24 +476,24 @@ function confirmLesson(req, res) {
 
 }
 
-function deleteHomework(req,res){
+function deleteHomework(req, res) {
     const userId = req.userInfo.userId
     const imageString = req.body.imageString;
 
-    Student.find({_id: userId})
-    .then(result => {
-        let homeworkArray = result[0].homework
-        const index = homeworkArray.indexOf(imageString)
-        homeworkArray.splice(index, 1)
-
-        Student.findByIdAndUpdate(userId, {homework: homeworkArray}, {new: true})
+    Student.find({ _id: userId })
         .then(result => {
-                res.status(200).json(result)
+            let homeworkArray = result[0].homework
+            const index = homeworkArray.indexOf(imageString)
+            homeworkArray.splice(index, 1)
+
+            Student.findByIdAndUpdate(userId, { homework: homeworkArray }, { new: true })
+                .then(result => {
+                    res.status(200).json(result)
+                })
         })
-    })
-    .catch(err => {
-        res.status(500).json(err)
-    })
+        .catch(err => {
+            res.status(500).json(err)
+        })
 
 }
 

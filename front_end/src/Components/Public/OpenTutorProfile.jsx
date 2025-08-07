@@ -44,7 +44,7 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
             {!showReviews && !showMessage && <div className="border-gray-300 border-t mx-5"></div>}
 
             <div className='h-full'>
-                <div className={`relative h-full ${showReviews && 'overflow-hidden'}`}>
+                <div className={`relative h-full flex flex-col ${showReviews && 'overflow-hidden'}`}>
                     <motion.div
                         initial={{ y: "100%", opacity: 0, height: 0 }}
                         animate={{ y: showReviews ? 0 : "100%", opacity: showReviews ? 1 : 0, height: showReviews ? "100%" : 0 }}
@@ -125,23 +125,25 @@ export default function OpenTutorProfile({ tutor, closeViewTutor, setSection }) 
                             </div>
                         </div>
                     </motion.div>
-                    <div className='flex justify-between items-center px-5'>
-                        <div className='flex items-center text-sm py-2'>
-                            <img src={clock} alt="clock" className='h-5 pr-1' />
-                            <div>{tutor.hours ? tutor.hours : '0' + ' hours tutored'}</div>
+                    <div className='grow overflow-scroll'>
+                        <div className='flex justify-between items-center px-5'>
+                            <div className='flex items-center text-sm py-2'>
+                                <img src={clock} alt="clock" className='h-5 pr-1' />
+                                <div>{(tutor.hours ? tutor.hours : '0') + ' hours tutored'}</div>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="font-roboto">Rate:</div>
+                                <div className="font-roboto-title-italic text-lg">{'$' + tutor.rate + '/hour'}</div>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="font-roboto">Rate:</div>
-                            <div className="font-roboto-title-italic text-lg">{'$' + tutor.rate + '/hour'}</div>
+                        <div className="p-5 pt-0">
+                            <div className="font-roboto-title text-lg">Bio:</div>
+                            <div className="text-sm font-roboto-title-italic">{tutor.bio}</div>
                         </div>
-                    </div>
-                    <div className="p-5 pt-0">
-                        <div className="font-roboto-title text-lg">Bio:</div>
-                        <div className="text-sm font-roboto-title-italic">{tutor.bio}</div>
-                    </div>
-                    <div className="p-5 pt-0">
-                        <div className="font-roboto text-lg">Education:</div>
-                        <div className="text-sm font-roboto-title-italic">{tutor.education}</div>
+                        <div className="p-5 pt-0">
+                            <div className="font-roboto text-lg">Education:</div>
+                            <div className="text-sm font-roboto-title-italic">{tutor.education}</div>
+                        </div>
                     </div>
                     <div className="border-gray-300 border-t mx-5"></div>
                     <div className={`flex justify-center ${(showReviews || showMessage) && 'hidden'}`}>
