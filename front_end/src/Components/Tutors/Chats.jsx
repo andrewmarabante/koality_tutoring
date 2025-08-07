@@ -78,11 +78,11 @@ export default function Chats(){
       }
 
     return(
-            <div className="h-full relative flex justify-center p-10 w-full font-roboto">
-                <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl h-full w-full md:w-3/4 md:pt-3 lg:w-1/2 xl:w-1/3 flex justify-start relative overflow-auto flex-col items-center">
+            <div className="h-full relative flex justify-center p-10 w-full font-roboto min-w-0">
+                <div className="bg-[rgba(255,255,255,0.75)] rounded-2xl h-full w-full md:w-3/4 md:pt-3 lg:w-1/2 xl:w-1/3 flex justify-start relative overflow-auto flex-col items-center min-w-0">
 
                     {!create ? 
-                    <div className="flex flex-col justify-start items-center w-full overflow-hidden ">
+                    <div className="flex flex-col justify-start items-center w-full overflow-hidden min-w-0">
                         <div className="text-2xl p-5 ">Messages</div>
                         <div className="w-full justify-start px-5 mb-5"><div className="font-roboto-title border-b w-fit">Inbox</div></div>
                         <div className="overflow-scroll w-full">
@@ -112,14 +112,14 @@ export default function Chats(){
 
 
                                 return(
-                                    <div className="flex items-center justify-start gap-2 w-full px-5 py-2 relative mb-3" key={v4()} onClick={() => openChat(chat._id)}>
+                                    <div className="flex items-center justify-start gap-2 w-full px-5 py-2 relative mb-3 min-w-0" key={v4()} onClick={() => openChat(chat._id)}>
                                         <img src={otherUsers.length === 1 && otherUsers[0].photo} alt="" className="h-12 rounded-full"/>
-                                        <div className="w-full">
+                                        <div className="w-9/12">
                                             <div className="flex w-full justify-between">
                                                 <div className="font-roboto text-sm ">{otherUsers.length === 1 && otherUsers[0].first_name + ' ' + otherUsers[0].last_name.slice(0,1)+'.'}</div>
                                                 <div className="h-full flex flex-col justify-start w-fit text-xs pt-1">{formattedDate}</div>
                                             </div>
-                                            <div className="text-xs font-roboto text-gray-500 w-full text-wrap">{lastMessage}</div>
+                                            <div className="text-xs font-roboto text-gray-500 grow text-wrap overflow-hidden max-w-full">{lastMessage}</div>
                                         </div>
                                     </div>
                                 )
