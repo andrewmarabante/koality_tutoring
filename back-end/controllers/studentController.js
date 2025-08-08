@@ -214,7 +214,7 @@ function createPaymentMethod(req, res) {
                         payment_method: payment_method,
                         customer: customerId,
                         confirm: true,
-                        usage: 'off_session', // optional but recommended
+                        usage: 'off_session', 
                         return_url: process.env.returnUrl,
                     });
 
