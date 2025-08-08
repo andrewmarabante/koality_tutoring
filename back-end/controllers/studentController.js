@@ -215,7 +215,7 @@ function createPaymentMethod(req, res) {
                         customer: customerId,
                         confirm: true,
                         usage: 'off_session', // optional but recommended
-                        return_url: 'http://localhost:5173/student',
+                        return_url: process.env.returnUrl,
                     });
 
                     if (intent.status === "succeeded") {

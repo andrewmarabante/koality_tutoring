@@ -238,9 +238,13 @@ function studentLogin(req, res) {
 
 async function membershipTotal(req, res) {
 
-    const count = await Student.countDocuments({
-        membership: { $ne: null, $ne: "" }
-    });
+const count = await Student.countDocuments({
+  membership: {
+    $nin: [null, ""],
+    $exists: true
+  }
+});
+
     res.json(count)
 }
 
