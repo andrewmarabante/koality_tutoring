@@ -21,7 +21,7 @@
     --font-roboto-title-italic: roboto-title-light, 'sans-serif';
 }
 
-body {
+html,body {
   overflow-x: hidden;
 }
 
