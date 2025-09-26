@@ -134,7 +134,6 @@ export default function StudentProfile({ setSection }) {
     function handleSubmit(e) {
         e.preventDefault()
 
-        console.log(e.target)
         const formData = new FormData();
 
         const firstName = e.target.firstName.value
@@ -288,7 +287,7 @@ export default function StudentProfile({ setSection }) {
                         </div>
                         <div className="flex justify-between flex-col p-2 items-center">
                             <div className="text-lg text-center">Email:</div>
-                            <div className="flex items-center gap-2 relative">
+                            <div className="flex items-center relative">
                                 <input type="text" placeholder={userInfo.email} className={`text-center border-gray-300 ${!userInfo.emailVerified && 'border-red-300'} border rounded-lg p-1`} name="email" />
                                 {!userInfo.emailVerified ? <img src={x} alt="x" className="absolute -right-6 h-5 bg-red-200 rounded-lg" /> : <div className="absolute -right-6 rounded-lg">
                                     <div className="h-5">
